@@ -1,0 +1,81 @@
+#!/bin/bash
+
+DEFAULT=default
+HISORA_TUNNEL=hisora
+SERVER=powidev
+USER=roetsm
+CMD="ssh -2 -L9000:encsv3:1521 $USER@$SERVER"
+
+tmux has-session -t $DEFAULT &> /dev/null
+if [ $? != 0 ]; then
+    tmux new-session -s $DEFAULT -n home -d
+    sleep 0.2
+    ### Install private key
+    tmux send-keys -t $DEFAULT:home "key" C-m
+    tmux select-window -t $DEFAULT:home
+fi
+#tmux has-session -t $HISORA_TUNNEL &> /dev/null
+#if [ $? != 0 ]; then
+#    tmux new-session -s $HISORA_TUNNEL -n home -d
+#fi
+
+if [ $1 == "hisora" ]; then
+    tmux send-keys -t $HISORA_TUNNEL:home "$CMD" C-m
+fi
+
+if [ $1 == "route" ]; then
+    ### Configure route
+    tmux send-keys -t $DEFAULT:home "rte" C-m
+    sleep 0.2
+    tmux send-keys -t $DEFAULT:home "anduril1" C-m
+fi
+
+if [ $1 == "python" ]; then
+    tmux new-window -t $DEFAULT -n python "ipython"
+fi
+if [ $1 == "anaconda" ]; then
+    export PATH="/data/progs/anaconda3/bin:$PATH"
+    tmux new-window -t $DEFAULT -n python "ipython"
+fi
+
+if [ $1 == "server" ]; then
+    tmux new-window -t $DEFAULT -n powi "ssh roetsm@powi"
+    tmux new-window -t $DEFAULT -n themis "ssh roetsm@themis"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "dev" ]; then
+    tmux new-window -d -t $DEFAULT -n powidev "ssh roetsm@powidev"
+    tmux new-window -d -t $DEFAULT -n themisdev "ssh mroets@themisdev"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "themis" ]; then
+    tmux new-window -t $DEFAULT -n themis "ssh roetsm@themis"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "themisold" ]; then
+    tmux new-window -t $DEFAULT -n themis-old "ssh mroets@themis-old"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "powi" ]; then
+    tmux new-window -t $DEFAULT -n powi "ssh roetsm@powi"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "powiold" ]; then
+    tmux new-window -t $DEFAULT -n powi-old "ssh roetsm@powi-old"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "powiqa" ]; then
+    tmux new-window -t $DEFAULT -n powiqa "ssh roetsm@powiqa"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "themisqa" ]; then
+    tmux new-window -t $DEFAULT -n themisqa "ssh roetsm@themisqa"
+    tmux select-window -t $DEFAULT:home
+fi
+if [ $1 == "kill" ]; then
+    tmux kill-session -t $DEFAULT
+fi
+
+if [ -z "$TMUX" ]; then
+    tmux attach -t $DEFAULT
+fi

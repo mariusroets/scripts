@@ -1,0 +1,21 @@
+#!/bin/bash
+
+SESSION=hisora
+SERVER=powidev
+USER=roetsm
+CMD="ssh -2 -L9000:encsv1:1521 $USER@$SERVER"
+
+#if [ ! -z "$TMUX" ]; then
+#    current=`echo $TMUX | perl -na -F'[,\/]' -e 'print $F[3]'`
+#    tmux detach-client
+#fi
+#echo $current
+#echo $CMD
+
+
+tmux has-session -t $SESSION &> /dev/null
+if [ $? != 0 ]; then
+    echo "Create the '$SESSION' session first"
+    exit 1
+fi
+tmux send-keys -t $SESSION:home "$CMD" C-m
