@@ -27,10 +27,10 @@ elif [ $1 == "route" ]; then
     sleep 0.2
     tmux send-keys -t $DEFAULT:home "anduril1" C-m
 elif [ $1 == "python" ]; then
-    tmux new-window -t $DEFAULT -n python "ipython"
+    tmux new-window -t $DEFAULT -n python
 elif [ $1 == "anaconda" ]; then
     export PATH="/data/progs/anaconda3/bin:$PATH"
-    tmux new-window -t $DEFAULT -n python "ipython"
+    tmux new-window -t $DEFAULT -n python
 elif [ $1 == "server" ]; then
     tmux new-window -t $DEFAULT -n powi "ssh roetsm@powi"
     tmux new-window -t $DEFAULT -n themis "ssh roetsm@themis"
