@@ -38,22 +38,16 @@ elif [ $1 == "dev" ]; then
     tmux select-window -t $DEFAULT:home
 elif [ $1 == "themis" ]; then
     tmux new-window -t $DEFAULT -n themis "ssh roetsm@themis"
-    tmux select-window -t $DEFAULT:home
 elif [ $1 == "themisold" ]; then
     tmux new-window -t $DEFAULT -n themis-old "ssh mroets@themis-old"
-    tmux select-window -t $DEFAULT:home
 elif [ $1 == "powi" ]; then
     tmux new-window -t $DEFAULT -n powi "ssh roetsm@powi"
-    tmux select-window -t $DEFAULT:home
 elif [ $1 == "powiold" ]; then
     tmux new-window -t $DEFAULT -n powi-old "ssh roetsm@powi-old"
-    tmux select-window -t $DEFAULT:home
 elif [ $1 == "powiqa" ]; then
     tmux new-window -t $DEFAULT -n powiqa "ssh roetsm@powiqa"
-    tmux select-window -t $DEFAULT:home
 elif [ $1 == "themisqa" ]; then
     tmux new-window -t $DEFAULT -n themisqa "ssh roetsm@themisqa"
-    tmux select-window -t $DEFAULT:home
 elif [ $1 == "kill" ]; then
     tmux kill-session -t $DEFAULT
 else
