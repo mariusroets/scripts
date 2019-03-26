@@ -1,5 +1,5 @@
 #!/bin/bash
 
-sudo route del -net 172.24.229.0 netmask 255.255.255.0 gw 0.0.0.0
-sudo route -v add -net 172.0.0.0 netmask 255.0.0.0  eth0
+sudo ip route del 172.24.229.0/24 dev eth0
+sudo ip route add 172.0.0.0/8 dev eth0
 
