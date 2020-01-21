@@ -1,59 +1,37 @@
 #!/bin/bash
 
-DEFAULT=default
-HISORA_TUNNEL=hisora
-SERVER=powidev
-USER=roetsm
-CMD="ssh -2 -L9000:encsv3:1521 $USER@$SERVER"
+if [ "$1" == "detach" ]; then
+    tmux detach
+    exit 0
+elif [ "$1" == "list" ]; then
+    tmux list-sessions
+    exit 0
+elif [ "$1" == "kill" ]; then
+    tmux kill-session
+    exit 0
+fi
 
-tmux has-session -t $DEFAULT &> /dev/null
+if [ $# == 1 ]; then
+    SESSION_NAME=$1
+else
+    SESSION_NAME=default
+fi
+
+tmux has-session -t $SESSION_NAME &> /dev/null
 if [ $? != 0 ]; then
-    tmux new-session -s $DEFAULT -n home -d
+    tmux new-session -s $SESSION_NAME -n home -d
     sleep 0.2
     ### Install private key
-    tmux send-keys -t $DEFAULT:home "key" C-m
-    tmux select-window -t $DEFAULT:home
-fi
-#tmux has-session -t $HISORA_TUNNEL &> /dev/null
-#if [ $? != 0 ]; then
-#    tmux new-session -s $HISORA_TUNNEL -n home -d
-#fi
-
-if [ $1 == "hisora" ]; then
-    tmux send-keys -t $HISORA_TUNNEL:home "$CMD" C-m
-elif [ $1 == "route" ]; then
-    ### Configure route
-    tmux send-keys -t $DEFAULT:home "rte" C-m
-    sleep 0.2
-    tmux send-keys -t $DEFAULT:home "anduril1" C-m
-elif [ $1 == "python" ]; then
-    tmux new-window -t $DEFAULT -n python
-elif [ $1 == "server" ]; then
-    tmux new-window -t $DEFAULT -n powi "ssh roetsm@powi"
-    tmux new-window -t $DEFAULT -n themis "ssh roetsm@themis"
-    tmux select-window -t $DEFAULT:home
-elif [ $1 == "dev" ]; then
-    tmux new-window -d -t $DEFAULT -n powidev "ssh roetsm@powidev"
-    tmux new-window -d -t $DEFAULT -n themisdev "ssh mroets@themisdev"
-    tmux select-window -t $DEFAULT:home
-elif [ $1 == "themis" ]; then
-    tmux new-window -t $DEFAULT -n themis "ssh roetsm@themis"
-elif [ $1 == "themisold" ]; then
-    tmux new-window -t $DEFAULT -n themis-old "ssh mroets@themis-old"
-elif [ $1 == "powi" ]; then
-    tmux new-window -t $DEFAULT -n powi "ssh roetsm@powi"
-elif [ $1 == "powiold" ]; then
-    tmux new-window -t $DEFAULT -n powi-old "ssh roetsm@powi-old"
-elif [ $1 == "powiqa" ]; then
-    tmux new-window -t $DEFAULT -n powiqa "ssh roetsm@powiqa"
-elif [ $1 == "themisqa" ]; then
-    tmux new-window -t $DEFAULT -n themisqa "ssh roetsm@themisqa"
-elif [ $1 == "kill" ]; then
-    tmux kill-session -t $DEFAULT
+    tmux send-keys -t $SESSION_NAME:home "key" C-m
+    if [ -n "$TMUX" ]; then
+        echo "Session $SESSION_NAME created, but not attached. Detach from this one first"
+        exit 1
+    fi
 else
-    tmux new-window -t $DEFAULT -n $1 
+    if [ -n "$TMUX" ]; then
+        CURRENT_SESSION=`tmux display-message -p '#S'`
+        echo "You are attached to session $CURRENT_SESSION. Detach first."
+        exit 1
+    fi
 fi
-
-if [ -z "$TMUX" ]; then
-    tmux attach -t $DEFAULT
-fi
+tmux attach-session -t $SESSION_NAME

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -z "$TMUX" ]; then
+    echo "This command requires you to be connected. Connect to one of the session below, or create a new one"
+    session list
+    exit 1
+fi
+if [ $1 == "server" ]; then
+    tmux new-window -n powi "ssh roetsm@powi"
+    tmux new-window -n themis "ssh roetsm@themis"
+    tmux select-window -t home
+elif [ $1 == "dev" ]; then
+    tmux new-window -d -n powidev "ssh roetsm@powidev"
+    tmux new-window -d -n themisdev "ssh mroets@themisdev"
+    tmux select-window -t home
+elif [ $1 == "themis" ]; then
+    tmux new-window -n themis "ssh roetsm@themis"
+elif [ $1 == "themisold" ]; then
+    tmux new-window -n themis-old "ssh mroets@themis-old"
+elif [ $1 == "powi" ]; then
+    tmux new-window -n powi "ssh roetsm@powi"
+elif [ $1 == "powiold" ]; then
+    tmux new-window -n powi-old "ssh roetsm@powi-old"
+elif [ $1 == "powiqa" ]; then
+    tmux new-window -n powiqa "ssh roetsm@powiqa"
+elif [ $1 == "themisqa" ]; then
+    tmux new-window -n themisqa "ssh roetsm@themisqa"
+else
+    tmux new-window -n $1 
+fi
