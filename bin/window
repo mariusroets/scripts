@@ -8,17 +8,17 @@ fi
 if [ "$1" == "python" ]; then
     CURRENT_SESSION=`tmux display-message -p '#S'`
     if [ "$CURRENT_SESSION" != "prog" ]; then
-        echo "Warning: The python window should be create in the 'prog' session if sending scripts to it is required"
+        echo "Warning: The python window should be created in the 'prog' session if sending scripts to it is required"
+        tmux new-window -d -n python
+    else
+        tmux new-window -n python
     fi
-    tmux new-window -n python
-if [ "$1" == "server" ]; then
-    tmux new-window -n powi "ssh roetsm@powi"
-    tmux new-window -n themis "ssh roetsm@themis"
-    tmux select-window -t home
+elif [ "$1" == "server" ]; then
+    tmux new-window -d -n powi "ssh roetsm@powi"
+    tmux new-window -d -n themis "ssh roetsm@themis"
 elif [ "$1" == "dev" ]; then
     tmux new-window -d -n powidev "ssh roetsm@powidev"
     tmux new-window -d -n themisdev "ssh mroets@themisdev"
-    tmux select-window -t home
 elif [ "$1" == "themis" ]; then
     tmux new-window -n themis "ssh roetsm@themis"
 elif [ "$1" == "themisold" ]; then

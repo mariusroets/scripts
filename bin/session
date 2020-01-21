@@ -27,6 +27,9 @@ if [ $? != 0 ]; then
         echo "Session $SESSION_NAME created, but not attached. Detach from this one first"
         exit 1
     fi
+    if [ "$SESSION_NAME" == "prog" ]; then
+        tmux new-window -n python
+    fi
 else
     if [ -n "$TMUX" ]; then
         CURRENT_SESSION=`tmux display-message -p '#S'`
