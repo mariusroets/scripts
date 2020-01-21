@@ -5,25 +5,31 @@ if [ -z "$TMUX" ]; then
     session list
     exit 1
 fi
-if [ $1 == "server" ]; then
+if [ "$1" == "python" ]; then
+    CURRENT_SESSION=`tmux display-message -p '#S'`
+    if [ "$CURRENT_SESSION" != "prog" ]; then
+        echo "Warning: The python window should be create in the 'prog' session if sending scripts to it is required"
+    fi
+    tmux new-window -n python
+if [ "$1" == "server" ]; then
     tmux new-window -n powi "ssh roetsm@powi"
     tmux new-window -n themis "ssh roetsm@themis"
     tmux select-window -t home
-elif [ $1 == "dev" ]; then
+elif [ "$1" == "dev" ]; then
     tmux new-window -d -n powidev "ssh roetsm@powidev"
     tmux new-window -d -n themisdev "ssh mroets@themisdev"
     tmux select-window -t home
-elif [ $1 == "themis" ]; then
+elif [ "$1" == "themis" ]; then
     tmux new-window -n themis "ssh roetsm@themis"
-elif [ $1 == "themisold" ]; then
+elif [ "$1" == "themisold" ]; then
     tmux new-window -n themis-old "ssh mroets@themis-old"
-elif [ $1 == "powi" ]; then
+elif [ "$1" == "powi" ]; then
     tmux new-window -n powi "ssh roetsm@powi"
-elif [ $1 == "powiold" ]; then
+elif [ "$1" == "powiold" ]; then
     tmux new-window -n powi-old "ssh roetsm@powi-old"
-elif [ $1 == "powiqa" ]; then
+elif [ "$1" == "powiqa" ]; then
     tmux new-window -n powiqa "ssh roetsm@powiqa"
-elif [ $1 == "themisqa" ]; then
+elif [ "$1" == "themisqa" ]; then
     tmux new-window -n themisqa "ssh roetsm@themisqa"
 else
     tmux new-window -n $1 
