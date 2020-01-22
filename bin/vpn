@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$1" == "kill" ]; then
+    vpnpid=`pidof openconnect`
+    if [ -n "$vpnpid" ]; then
+        sudo kill -2 $vpnpid
+    fi
+else
+    echo anduril15 | sudo openconnect -b -u roetsm --usergroup Eskom --passwd-on-stdin ssl.eskom.co.za
+fi
