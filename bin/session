@@ -28,7 +28,7 @@ if [ $? != 0 ]; then
         exit 1
     fi
     if [ "$SESSION_NAME" == "prog" ]; then
-        tmux new-window -n python
+        tmux new-window -c /data/python -n python
     fi
 else
     if [ -n "$TMUX" ]; then
