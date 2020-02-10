@@ -10,7 +10,6 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 ## Custom variables
-set $terminal konsole
 set $ws1 "1: Firefox"
 set $ws2 "2: Terminal"
 set $ws3 "3: Python"
@@ -21,6 +20,7 @@ set $ws7 "7: Database"
 set $ws8 "8: Banking"
 set $ws9 "9"
 set $ws10 "10"
+set $terminal i3-sensible-terminal
 set $clipboard klipper
 set $fileman ranger
 set $screenshot shutter
