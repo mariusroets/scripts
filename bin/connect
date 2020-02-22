@@ -1,0 +1,5 @@
+#!/bin/bash
+
+nmcli connection up 'Eskom Fixed IP'
+nmcli --ask connection up 'batcave-mobile'
+nmcli connection show

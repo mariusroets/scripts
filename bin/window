@@ -9,9 +9,9 @@ if [ "$1" == "python" ]; then
     CURRENT_SESSION=`tmux display-message -p '#S'`
     if [ "$CURRENT_SESSION" != "prog" ]; then
         echo "Warning: The python window should be created in the 'prog' session if sending scripts to it is required"
-        tmux new-window -d -n python
+        tmux new-window -d -c /data/python -n python
     else
-        tmux new-window -n python
+        tmux new-window -c /data/python -n python
     fi
 elif [ "$1" == "server" ]; then
     tmux new-window -d -n powi "ssh roetsm@powi"
