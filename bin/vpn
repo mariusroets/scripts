@@ -1,10 +1,16 @@
 #!/bin/bash
 
-if [ "$1" == "kill" ]; then
-    vpnpid=`pidof openconnect`
+vpnpid=`pidof openconnect`
+if [ "$1" == "status" ]; then
     if [ -n "$vpnpid" ]; then
-        sudo kill -2 $vpnpid
+        echo "VPN is running with pid $vpnpid"
+    else
+        echo "VPN is not running"
     fi
+    exit 0
+fi
+if [ -n "$vpnpid" ]; then
+    sudo kill -2 $vpnpid
 else
-    echo anduril15 | sudo openconnect -b -u roetsm --usergroup Eskom --passwd-on-stdin ssl.eskom.co.za
+    sudo openconnect -b -u roetsm --usergroup Eskom --passwd-on-stdin ssl.eskom.co.za
 fi
