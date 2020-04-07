@@ -19,16 +19,29 @@ fi
 
 tmux has-session -t $SESSION_NAME &> /dev/null
 if [ $? != 0 ]; then
-    tmux new-session -s $SESSION_NAME -n home -d
-    sleep 0.2
-    ### Install private key
-    tmux send-keys -t $SESSION_NAME:home "key" C-m
-    if [ -n "$TMUX" ]; then
-        echo "Session $SESSION_NAME created, but not attached. Detach from this one first"
-        exit 1
-    fi
     if [ "$SESSION_NAME" == "prog" ]; then
-        tmux new-window -c /data/python -n python
+        tmux new-session -s $SESSION_NAME -n python -c /data/python/pythonmodules -d
+        tmux send-keys -t $SESSION_NAME:python "conda activate development" C-m
+        tmux send-keys -t $SESSION_NAME:python "gvim" C-m
+    elif [ "$SESSION_NAME" == "web" ]; then
+        tmux new-session -s $SESSION_NAME -c /data/python/dpowi -n web -d
+        tmux send-keys -t $SESSION_NAME:web "conda activate powi" C-m
+        tmux send-keys -t $SESSION_NAME:web "gvim" C-m
+        tmux send-keys -t $SESSION_NAME:web "alias run='./manage.py runserver_plus'" C-m
+    elif [ "$SESSION_NAME" == "jupyter" ]; then
+        tmux new-session -s $SESSION_NAME -c /data/python/projects -n jupyter -d
+        tmux send-keys -t $SESSION_NAME:jupyter "conda activate analysis" C-m
+        tmux send-keys -t $SESSION_NAME:jupyter "jupyter lab" C-m
+    else
+        tmux new-session -s $SESSION_NAME -n home -d
+        if [ "$SESSION_NAME" == "ipython" ]; then
+            tmux send-keys -t $SESSION_NAME:home "conda activate analysis" C-m
+            tmux send-keys -t $SESSION_NAME:home "ipython" C-m
+        fi
+        if [ -n "$TMUX" ]; then
+            echo "Session $SESSION_NAME created, but not attached. Detach from this one first"
+            exit 1
+        fi
     fi
 else
     if [ -n "$TMUX" ]; then
