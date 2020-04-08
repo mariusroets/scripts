@@ -1,6 +1,8 @@
 #!/bin/bash
 
 vpnpid=`pidof openconnect`
+group="Eskom"
+server="ssl"
 if [ "$1" == "status" ]; then
     if [ -n "$vpnpid" ]; then
         echo "VPN is running with pid $vpnpid"
@@ -8,9 +10,12 @@ if [ "$1" == "status" ]; then
         echo "VPN is not running"
     fi
     exit 0
+elif [ "$1" == "vpn" ]; then
+    group="ESKOM-SECURE-VPN"
+    server="vpn"
 fi
 if [ -n "$vpnpid" ]; then
     sudo kill -2 $vpnpid
 else
-    sudo openconnect -b -u roetsm --usergroup Eskom --passwd-on-stdin ssl.eskom.co.za
+    sudo openconnect -b -u roetsm --usergroup $group --passwd-on-stdin $server.eskom.co.za
 fi
