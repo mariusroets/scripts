@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DEV_BRANCH="dev"
+PREFIX="mr\/"
+
+function update_dev_branch {
+    echo "Updating $DEV_BRANCH..."
+    git checkout $DEV_BRANCH
+    git pull
+}
+function update_local_branch {
+    local branch_name="$1"
+    echo "Updating $branch_name..."
+    git checkout $branch_name
+    git pull
+    git merge --no-ff $DEV_BRANCH
+    git push
+    git checkout $DEV_BRANCH
+}
+
+update_dev_branch
+for branch in `git branch | grep $PREFIX`; do
+    echo "Would you like to update branch: $branch? (<y>/n)"
+    read response
+    if [[ "$response" == "n" ]]; then
+        continue
+    fi
+    echo "Ok"
+    update_local_branch $branch
+
+done
+#update_local_branch "mr/ipp"
