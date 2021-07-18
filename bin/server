@@ -1,0 +1,11 @@
+#!/bin/bash
+
+POWI=roetsm@powi
+THEMIS=roetsm@themis
+
+
+if [ "$1" == "powi" ]; then
+    ssh $POWI
+elif [ "$1" == "themis" ]; then
+    ssh $THEMIS
+fi
