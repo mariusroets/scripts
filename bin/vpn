@@ -17,5 +17,5 @@ fi
 if [ -n "$vpnpid" ]; then
     sudo kill -2 $vpnpid
 else
-    sudo openconnect -b -u roetsm --usergroup $group --passwd-on-stdin $server.eskom.co.za
+    sudo openconnect -b -u roetsm --authgroup $group --passwd-on-stdin $server.eskom.co.za
 fi
