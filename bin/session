@@ -11,8 +11,13 @@ elif [ "$1" == "kill" ]; then
     exit 0
 fi
 
-if [ $# == 1 ]; then
+if [ $# -ge 1 ]; then
     SESSION_NAME=$1
+    if [ $# -eq 2 ]; then
+        RUN_PATH="$2"
+    else
+        RUN_PATH=/data/python/pythonmodules
+    fi
 else
     SESSION_NAME=default
 fi
@@ -20,7 +25,7 @@ fi
 tmux has-session -t $SESSION_NAME &> /dev/null
 if [ $? != 0 ]; then
     if [ "$SESSION_NAME" == "prog" ]; then
-        tmux new-session -s $SESSION_NAME -n python -c /data/python/pythonmodules -d
+        tmux new-session -s $SESSION_NAME -n python -c $RUN_PATH -d
         tmux send-keys -t $SESSION_NAME:python "conda activate development" C-m
         tmux send-keys -t $SESSION_NAME:python "gvim" C-m
     elif [ "$SESSION_NAME" == "web" ]; then
