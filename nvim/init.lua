@@ -59,6 +59,23 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local mappings = {
+  f = {
+    name = "file", -- optional group name
+    f = { "<cmd>Telescope find_files<cr>", "Find File" }, -- create a binding with label
+    r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" }, -- additional options for creating the keymap
+    n = { "New File" }, -- just a label. don't create any mapping
+    e = "Edit File", -- same as above
+    ["1"] = "which_key_ignore",  -- special label to hide it in the popup
+    b = { function() print("bar") end, "Foobar" } -- you can also pass functions!
+  },
+  g = {
+    name = "git",
+    s = { "<cmd>Git<cr>", "Show the current Git status" },
+    d = { "<cmd>Gvdiff<cr>", "Diff the current Git file against head" },
+  }
+}
+
 -- NOTE: Here is where you install your plugins.
 --  You can configure plugins using the `config` key.
 --
@@ -127,7 +144,7 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
       on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
+        mappings["g"]["p"] = {require('gitsigns').prev_hunk, '[G]it go to [P]revious Hunk' }
         vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
         vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
       end,
@@ -204,6 +221,12 @@ require('lazy').setup({
     },
     config = function()
       require("nvim-tree").setup {}
+    end,
+  },
+  {
+    'simrat39/symbols-outline.nvim',
+    config = function()
+      require("symbols-outline").setup({ })
     end,
   },
 
@@ -307,6 +330,7 @@ vim.keymap.set('n', '<leader>/', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
+vim.keymap.set('n', '<leader>g', 'Nop', { desc = 'Git operations' })
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
@@ -381,10 +405,11 @@ require('nvim-treesitter.configs').setup {
 }
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+mappings["d"] = { name = "diagnostics" }
+mappings["d"]["]"] = {vim.diagnostic.goto_prev, 'Go to next diagnostic message' }
+mappings["d"]["["] = {vim.diagnostic.goto_prev, 'Go to previous diagnostic message' }
+mappings["d"]["f"] = {vim.diagnostic.open_float, 'Open floating diagnostic message' }
+mappings["d"]["l"] = {vim.diagnostic.setloclist, 'Open diagnostics list' }
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
@@ -529,20 +554,25 @@ require("nvim-web-devicons").setup({
   strict = true;
 })
 require("bufferline").setup {}
+vim.keymap.set('n', '<f2>', '<cmd>NvimTreeToggle<cr>', { desc = 'Open File Manager' })
+vim.keymap.set('n', '<f3>', '<cmd>SymbolsOutline<cr>', { desc = 'Open Symbol Navigator' })
+vim.keymap.set('n', '<f8>', '<cmd>nohl<cr>', { desc = 'Remove search highlights' })
 vim.keymap.set('n', '<tab>', '<cmd>bnext<cr>' , { desc = 'Go to the next buffer' })
 vim.keymap.set('n', '<s-tab>', '<cmd>bprevious<cr>' , { desc = 'Go to the previous buffer' })
 vim.keymap.set('n', '<c-tab>', '<cmd>edit #<cr>' , { desc = 'Go to the alternate buffer' })
 vim.keymap.set('n', '<c-x>', '<cmd>bdelete<cr>' , { desc = 'Close the current buffer' })
 vim.keymap.set('i', 'jk', '<esc>', { desc = 'Convenient way to escape insert mode' })
-vim.keymap.set('n', '<f2>', '<cmd>NvimTreeToggle<cr>', { desc = 'Open File Manager' })
-vim.keymap.set('n', '<leader>gs', '<cmd>Git<cr>', { desc = 'Show the current Git status' })
-vim.keymap.set('n', '<leader>gd', '<cmd>Gvdiff<cr>', { desc = 'Diff the current Git file against head' })
---" Move to the previous buffer
---nmap <S-Tab> :bprevious<cr>
---" List open buffers and give switching option
---nmap <C-Q> :CtrlPBuffer<cr>
---" Move to the alternate buffer
---nmap <C-Tab> <C-^>
+vim.keymap.set('n', '<leader>yf', 'maggVG"+y`azz', { desc = 'Yank the entire file to clipboard and return to current position' })
+vim.keymap.set('n', '<leader>yy', '"+yy', { desc = 'Yank the current line to clipboard' })
+vim.keymap.set('v', '<leader>y', '"+y', { desc = 'Yank visual selection to clipboard' })
+vim.keymap.set('n', '<leader>p', '"+p', { desc = 'Paste from clipboard' })
+vim.keymap.set('n', '<leader>t', '<cmd>NvimTreeFocus<cr>', { desc = 'Go to the tree' })
+vim.keymap.set('n', '<C-J>', '<C-W>j', { desc = 'Go to split below' })
+vim.keymap.set('n', '<C-K>', '<C-W>k', { desc = 'Go to split above' })
+vim.keymap.set('n', '<C-H>', '<C-W>h', { desc = 'Go to split left' })
+vim.keymap.set('n', '<C-L>', '<C-W>l', { desc = 'Go to split right' })
+local wk = require("which-key")
+wk.register(mappings, { prefix = "<leader>" })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
