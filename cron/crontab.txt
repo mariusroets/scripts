@@ -1,1 +1,1 @@
-*/5 * * * * ~/scripts/crons/duck.sh >/dev/null 2>&1
+*/5 * * * * /home/roetsm/scripts/cron/duck.sh >/dev/null 2>&1
