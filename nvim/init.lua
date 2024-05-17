@@ -46,6 +46,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.autoindent = true
+vim.opt.colorcolumn = "100"
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -183,10 +184,9 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
+    main = "ibl",
+    opts = {},
+    commit = "29be0919b91fb59eca9e90690d76014233392bef",
   },
 
   -- "gc" to comment visual regions/lines
@@ -228,10 +228,13 @@ require('lazy').setup({
     end,
   },
   {
-    'simrat39/symbols-outline.nvim',
-    config = function()
-      require("symbols-outline").setup({ })
-    end,
+    'stevearc/aerial.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = {
+       "nvim-treesitter/nvim-treesitter",
+       "nvim-tree/nvim-web-devicons"
+    },
   },
 
 
@@ -559,8 +562,10 @@ require("nvim-web-devicons").setup({
 })
 require("bufferline").setup {}
 vim.keymap.set('n', '<f2>', '<cmd>NvimTreeToggle<cr>', { desc = 'Open File Manager' })
-vim.keymap.set('n', '<f3>', '<cmd>SymbolsOutline<cr>', { desc = 'Open Symbol Navigator' })
+vim.keymap.set('n', '<f3>', '<cmd>AerialToggle<cr>', { desc = 'Open Symbol Navigator' })
+vim.keymap.set('n', '<f7>', '@q', { desc = 'Run macro in the q register' })
 vim.keymap.set('n', '<f8>', '<cmd>nohl<cr>', { desc = 'Remove search highlights' })
+vim.keymap.set('n', '<f12>', '<cmd>e ~/.config/nvim/init.lua<cr>', { desc = 'Open init file' })
 vim.keymap.set('n', '<tab>', '<cmd>bnext<cr>' , { desc = 'Go to the next buffer' })
 vim.keymap.set('n', '<s-tab>', '<cmd>bprevious<cr>' , { desc = 'Go to the previous buffer' })
 vim.keymap.set('n', '<c-tab>', '<cmd>edit #<cr>' , { desc = 'Go to the alternate buffer' })
