@@ -229,7 +229,24 @@ require('lazy').setup({
   },
   {
     'stevearc/aerial.nvim',
-    opts = {},
+    opts = {
+      layout = {
+        min_width = 30,
+      },
+      filter_kind = {
+        "Class",
+        "Constructor",
+        "Enum",
+        "Function",
+        "Interface",
+        "Module",
+        "Method",
+        "Struct",
+        "Variable",
+        "Property",
+        "Package",
+      },
+    },
     -- Optional dependencies
     dependencies = {
        "nvim-treesitter/nvim-treesitter",
