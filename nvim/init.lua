@@ -134,6 +134,22 @@ require('lazy').setup({
     },
   },
 
+  { "alexghergh/nvim-tmux-navigation", config = function()
+    local nvim_tmux_nav = require('nvim-tmux-navigation')
+
+    nvim_tmux_nav.setup {
+      disable_when_zoomed = true -- defaults to false
+    }
+
+    vim.keymap.set('n', "<C-h>", nvim_tmux_nav.NvimTmuxNavigateLeft)
+    vim.keymap.set('n', "<C-j>", nvim_tmux_nav.NvimTmuxNavigateDown)
+    vim.keymap.set('n', "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp)
+    vim.keymap.set('n', "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight)
+    vim.keymap.set('n', "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive)
+    vim.keymap.set('n', "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
+
+  end
+  },
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim', opts = {} },
   {
@@ -593,10 +609,10 @@ vim.keymap.set('n', '<leader>yy', '"+yy', { desc = 'Yank the current line to cli
 vim.keymap.set('v', '<leader>y', '"+y', { desc = 'Yank visual selection to clipboard' })
 vim.keymap.set('n', '<leader>p', '"+p', { desc = 'Paste from clipboard' })
 vim.keymap.set('n', '<leader>t', '<cmd>NvimTreeFocus<cr>', { desc = 'Go to the tree' })
-vim.keymap.set('n', '<C-J>', '<C-W>j', { desc = 'Go to split below' })
-vim.keymap.set('n', '<C-K>', '<C-W>k', { desc = 'Go to split above' })
-vim.keymap.set('n', '<C-H>', '<C-W>h', { desc = 'Go to split left' })
-vim.keymap.set('n', '<C-L>', '<C-W>l', { desc = 'Go to split right' })
+vim.keymap.set('n', '<C-J>', '<Cmd>NvimTmuxNavigateDown<CR>', { desc = 'Go to split below' })
+vim.keymap.set('n', '<C-K>', '<Cmd>NvimTmuxNavigateUp<CR>', { desc = 'Go to split above' })
+vim.keymap.set('n', '<C-h>', '<Cmd>NvimTmuxNavigateLeft<CR>', { desc = 'Go to split left' })
+vim.keymap.set('n', '<C-L>', '<Cmd>NvimTmuxNavigateRight<CR>', { desc = 'Go to split right' })
 local wk = require("which-key")
 wk.register(mappings, { prefix = "<leader>" })
 
