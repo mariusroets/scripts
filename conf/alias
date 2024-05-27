@@ -2,3 +2,7 @@ alias ssh="TERM=xterm-256color ssh"
 alias gp="git push -o ci.skip"
 alias gpu="git push -o ci.skip --set-upstream origin"
 alias gb="git checkout -b"
+alias powi="server powi"
+alias themis="server themis"
+alias free='free -m'                      # show sizes in MB
+alias vi="nvim"
