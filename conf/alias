@@ -6,3 +6,5 @@ alias powi="server powi"
 alias themis="server themis"
 alias free='free -m'                      # show sizes in MB
 alias vi="nvim"
+alias hg="history | grep"
+alias pg="ps -ef | grep"
