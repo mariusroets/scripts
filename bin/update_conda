@@ -1,5 +1,0 @@
-#!/bin/bash
-
-conda update conda
-conda update --all
-conda env list | perl -ane 'if (!grep /$F[0]/, ("#", "base")) { print "Updating $F[0]\n"; `conda update -n $F[0] --all`}'

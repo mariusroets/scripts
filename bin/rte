@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo python ~/bin/setup_route.py 1
