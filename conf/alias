@@ -12,5 +12,33 @@ function server()
 }
 function db()
 {
-    gqlplus $1@$2
+    source ~/.db.sh
+    if [ "$1" == "prdme" ]; then
+        user=${PRDME[user]}
+        db=${PRDME[db]}
+        pwd=${PRDME[pwd]}
+    fi
+    if [ "$1" == "prdsy" ]; then
+        user=${PRDSY[user]}
+        db=${PRDSY[db]}
+        pwd=${PRDSY[pwd]}
+    fi
+    if [ "$1" == "devme" ]; then
+        user=${DEVME[user]}
+        db=${DEVME[db]}
+        pwd=${DEVME[pwd]}
+    fi
+    if [ "$1" == "devsy" ]; then
+        user=${DEVSY[user]}
+        db=${DEVSY[db]}
+        pwd=${DEVSY[pwd]}
+    fi
+    filename=$(mktemp)
+    cat > $filename <<- EOM
+connect $user/"$pwd"@$db
+--set sqlprompt "_USER'@'_CONNECT_IDENTIFIER> "
+EOM
+    echo $filename
+    gqlplus /nolog @$filename
+    rm $filename
 }
