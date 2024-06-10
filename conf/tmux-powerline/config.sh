@@ -1,0 +1,1 @@
+/home/roetsm/scripts/conf/tmux-powerline-config.sh
