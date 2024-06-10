@@ -1,8 +1,10 @@
 #!/bin/bash
 
-echo $1
-
-dir=/data/code/$1
+if [[ "$1" =~ ^[./~] ]]; then
+    dir=$1
+else
+    dir=/data/code/$1
+fi
 
 if [ -z "$TMUX" ]; then
     tmux new-session -A -s $1 -n $1 -c $dir nvim
