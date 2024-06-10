@@ -1,5 +1,6 @@
 
-function CountPanes()
+local M = {}
+function M.CountPanes()
     local handle = assert(io.popen("tmux list-panes")) -- Open pipe to capture output
 
     local line_count = 0
@@ -11,16 +12,18 @@ function CountPanes()
     return line_count, nil -- Return line count and nil for success
 end
 
-function BottomPane()
+function M.BottomPane()
     os.execute('tmux split-window -v -f -l 15 -c "#{pane_current_path}"')
 end
 
-function SendKeys(keys)
+function M.SendKeys(keys)
     os.execute("tmux send-keys -t 2 '" .. keys .. "' C-m")
 end
 
-function OpenSql(opts)
+function M.OpenSql(opts)
     os.execute('tmux split-window -v -f -l 15 -c "#{pane_current_path}"')
     os.execute("tmux send-keys -t 2 'db " .. opts.fargs[1] .. "' C-m")
     os.execute([[tmux send-keys -t 2 'set sqlprompt "_USER @ _CONNECT_IDENTIFIER> "' C-m]])
 end
+
+return M
