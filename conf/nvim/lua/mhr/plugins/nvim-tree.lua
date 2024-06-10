@@ -28,6 +28,9 @@ return {
                         enable = false,
                     },
                 },
+                change_dir = {
+                    global = true,
+                },
             },
             filters = {
                 custom = { ".DS_Store" },
