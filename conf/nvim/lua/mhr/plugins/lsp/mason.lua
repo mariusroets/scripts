@@ -33,6 +33,7 @@ return {
                 "tailwindcss",
                 "lua_ls",
                 "pylsp",
+                "sqls",
             },
         })
 
