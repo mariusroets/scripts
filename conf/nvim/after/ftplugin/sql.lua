@@ -7,7 +7,7 @@ local send = tmux.SendKeys
 
 vim.api.nvim_create_user_command("DB", open_window, {nargs = 1})
 
-vim.api.nvim_create_user_command("Compile",
+vim.api.nvim_create_user_command("RunSql",
     function()
         local x, err = count_panes()
         if err then
@@ -20,9 +20,8 @@ vim.api.nvim_create_user_command("Compile",
         local path = vim.fn.expand("%")
 
         send("@" .. path)
-        send("/")
     end,
     {})
 
-vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>Compile<cr>')
-vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>Compile<cr>')
+vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>RunSql<cr>')
+vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>RunSql<cr>')
