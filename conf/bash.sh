@@ -24,6 +24,7 @@ ex ()
   fi
 }
 
+source ~/scripts/conf/alias
 export PATH=$PATH:/data/code/environments/bin
 export EDITOR=nvim
 eval "$(zoxide init bash)"
