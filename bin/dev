@@ -6,7 +6,12 @@ else
     dir=/data/code/$1
 fi
 
-if [ -z "$TMUX" ]; then
+if [[ -f $dir/.venv ]]; then
+    cd $dir
+    source .venv/bin/activate
+fi
+
+if [[ -z $TMUX ]]; then
     tmux new-session -A -s $1 -n $1 -c $dir nvim
 else
     tmux new-window -n $1 -c $dir nvim
