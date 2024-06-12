@@ -92,6 +92,19 @@ return {
                     end,
                 })
             end,
+            ["pylsp"] = function()
+                lspconfig["pylsp"].setup({
+                    settings = {
+                        pylsp = {
+                            plugins = {
+                                pyflakes = { enabled = false },
+                                pycodestyle = { enabled = false },
+                                pylint = { enabled = true },
+                            },
+                        },
+                    },
+                })
+            end,
             ["svelte"] = function()
                 -- configure svelte server
                 lspconfig["svelte"].setup({
