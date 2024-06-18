@@ -36,3 +36,6 @@ opt.splitbelow = true -- split horizontal window to the bottom
 
 -- turn off swapfile
 opt.swapfile = false
+
+-- For rendering of markdown used by obsidian.nvim
+opt.conceallevel = 1
