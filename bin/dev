@@ -1,9 +1,14 @@
 #!/bin/bash
 
+TM=tmux
 if [[ "$1" =~ ^[./~] ]]; then
     dir=$1
 else
     dir=/data/code/$1
+fi
+
+if [[ "$2" == "shared" ]]; then
+    TM="tmux -S /var/tmux/shared-session"
 fi
 
 if [[ -f $dir/.venv ]]; then
@@ -12,7 +17,12 @@ if [[ -f $dir/.venv ]]; then
 fi
 
 if [[ -z $TMUX ]]; then
-    tmux new-session -A -s $1 -n $1 -c $dir nvim
+    echo $TM new-session -A -s $1 -n $1 -c $dir nvim
+    $TM new-session -A -s $1 -n $1 -c $dir nvim
+    if [[ "$2" == "shared" ]]; then
+        chmod 777 /var/tmux/shared-session
+    fi
 else
-    tmux new-window -n $1 -c $dir nvim
+    echo $TM new-window -n $1 -c $dir nvim
+    $TM new-window -n $1 -c $dir nvim
 fi

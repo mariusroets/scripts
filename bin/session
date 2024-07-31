@@ -1,58 +1,117 @@
 #!/bin/bash
 
-if [ "$1" == "detach" ]; then
-    tmux detach
-    exit 0
-elif [ "$1" == "list" ]; then
-    tmux list-sessions
-    exit 0
-elif [ "$1" == "kill" ]; then
-    tmux kill-session
-    exit 0
+OPTSTRING="slt:a:"
+TM=tmux
+DEV=false
+RAW=false
+while getopts $OPTSTRING opt; do
+    case $opt in
+        s)
+            TM="tmux -S /var/tmux/shared-session"
+            ;;
+        l)
+            $TM ls
+            exit 0
+            ;;
+        t)
+            if [[ $OPTARG == "dev" ]]; then
+                #$TM new-session -A -s $1 -n $1 -c $dir nvim
+                DEV=true
+                echo dev
+            fi
+            if [[ $OPTARG == "raw" ]]; then
+                RAW=true
+                echo raw
+            fi
+            ;;
+        a)
+            chmod 777 /var/tmux/shared-session
+            tmux server-access -a $OPTARG
+            ;;
+    esac
+done
+NAME=default
+i=1
+j=$#
+while [[ $i -le $j ]]; do
+    if [[ $i == $OPTIND ]]; then
+        NAME=$1
+        echo "name is $1"
+    fi
+    i=$((i+1));
+    shift 1;
+done
+if [[ "$DEV" == true ]]; then
+    if [[ "$NAME" =~ ^[./~] ]]; then
+        DIR=$NAME
+        $NAME=default
+    else
+        DIR=/data/code/$NAME
+    fi
+    $TM new-session -A -s $NAME -n $NAME -c $DIR -d
+    if [[ -f $DIR/.venv ]]; then
+        $TM send-keys -t $NAME "source .venv/bin/activate" C-m
+    fi
+    $TM send-keys -t $NAME "nvim" C-m
+    $TM attach-session -t $NAME
+fi
+if [[ "$RAW" == true ]]; then
+    $TM new-session -A -s $NAME -n $NAME
 fi
 
-if [ $# -ge 1 ]; then
-    SESSION_NAME=$1
-    if [ $# -eq 2 ]; then
-        RUN_PATH="$2"
-    else
-        RUN_PATH=/data/python/pythonmodules
-    fi
-else
-    SESSION_NAME=default
-fi
-
-tmux has-session -t $SESSION_NAME &> /dev/null
-if [ $? != 0 ]; then
-    if [ "$SESSION_NAME" == "prog" ]; then
-        tmux new-session -s $SESSION_NAME -n python -c $RUN_PATH -d
-        tmux send-keys -t $SESSION_NAME:python "conda activate development" C-m
-        tmux send-keys -t $SESSION_NAME:python "gvim" C-m
-    elif [ "$SESSION_NAME" == "web" ]; then
-        tmux new-session -s $SESSION_NAME -c /data/python/dpowi -n web -d
-        tmux send-keys -t $SESSION_NAME:web "conda activate powi" C-m
-        tmux send-keys -t $SESSION_NAME:web "gvim" C-m
-        tmux send-keys -t $SESSION_NAME:web "alias run='./manage.py runserver_plus'" C-m
-    elif [ "$SESSION_NAME" == "jupyter" ]; then
-        tmux new-session -s $SESSION_NAME -c /data/python/projects -n jupyter -d
-        tmux send-keys -t $SESSION_NAME:jupyter "conda activate analysis" C-m
-        tmux send-keys -t $SESSION_NAME:jupyter "jupyter lab" C-m
-    else
-        tmux new-session -s $SESSION_NAME -n home -d
-        if [ "$SESSION_NAME" == "ipython" ]; then
-            tmux send-keys -t $SESSION_NAME:home "conda activate analysis" C-m
-            tmux send-keys -t $SESSION_NAME:home "ipython" C-m
-        fi
-        if [ -n "$TMUX" ]; then
-            echo "Session $SESSION_NAME created, but not attached. Detach from this one first"
-            exit 1
-        fi
-    fi
-else
-    if [ -n "$TMUX" ]; then
-        CURRENT_SESSION=`tmux display-message -p '#S'`
-        echo "You are attached to session $CURRENT_SESSION. Detach first."
-        exit 1
-    fi
-fi
-tmux attach-session -t $SESSION_NAME
+# if [ "$1" == "detach" ]; then
+#     tmux detach
+#     exit 0
+# elif [ "$1" == "list" ]; then
+#     tmux list-sessions
+#     exit 0
+# elif [ "$1" == "kill" ]; then
+#     tmux kill-session
+#     exit 0
+# fi
+#
+# if [ $# -ge 1 ]; then
+#     SESSION_NAME=$1
+#     if [ $# -eq 2 ]; then
+#         RUN_PATH="$2"
+#     else
+#         RUN_PATH=/data/python/pythonmodules
+#     fi
+# else
+#     SESSION_NAME=default
+# fi
+#
+# tmux has-session -t $SESSION_NAME &> /dev/null
+# if [ $? != 0 ]; then
+#     if [ "$SESSION_NAME" == "prog" ]; then
+#         tmux new-session -s $SESSION_NAME -n python -c $RUN_PATH -d
+#         tmux send-keys -t $SESSION_NAME:python "conda activate development" C-m
+#         tmux send-keys -t $SESSION_NAME:python "gvim" C-m
+#     elif [ "$SESSION_NAME" == "web" ]; then
+#         tmux new-session -s $SESSION_NAME -c /data/python/dpowi -n web -d
+#         tmux send-keys -t $SESSION_NAME:web "conda activate powi" C-m
+#         tmux send-keys -t $SESSION_NAME:web "gvim" C-m
+#         tmux send-keys -t $SESSION_NAME:web "alias run='./manage.py runserver_plus'" C-m
+#     elif [ "$SESSION_NAME" == "jupyter" ]; then
+#         tmux new-session -s $SESSION_NAME -c /data/python/projects -n jupyter -d
+#         tmux send-keys -t $SESSION_NAME:jupyter "conda activate analysis" C-m
+#         tmux send-keys -t $SESSION_NAME:jupyter "jupyter lab" C-m
+#     else
+#         tmux new-session -s $SESSION_NAME -n home -d
+#         if [ "$SESSION_NAME" == "ipython" ]; then
+#             tmux send-keys -t $SESSION_NAME:home "conda activate analysis" C-m
+#             tmux send-keys -t $SESSION_NAME:home "ipython" C-m
+#         fi
+#         if [ -n "$TMUX" ]; then
+#             echo "Session $SESSION_NAME created, but not attached. Detach from this one first"
+#             exit 1
+#         fi
+#     fi
+# else
+#     if [ -n "$TMUX" ]; then
+#         CURRENT_SESSION=`tmux display-message -p '#S'`
+#         echo "You are attached to session $CURRENT_SESSION. Detach first."
+#         exit 1
+#     fi
+# fi
+# tmux attach-session -t $SESSION_NAME

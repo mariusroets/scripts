@@ -8,6 +8,7 @@ alias vi="nvim"
 alias hg="history | grep"
 alias pg="ps -ef | grep"
 alias cd="z"
+alias tmuxs="tmux -S /var/tmux/shared-session"
 function server()
 {
     TERM=xterm-256color ssh roetsm@$1
