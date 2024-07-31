@@ -1,9 +1,18 @@
 #!/bin/bash
 
+if [[ $# == 0 ]]; then
+    echo "session [-s] [-l] [-t raw/dev] [-a <user>] [<session_name>]"
+    echo "-s : Create a shared session. Only one allowed"
+    echo "-l : List sessions. With -s, list shared sessions. -s must be first then"
+    echo "-t : raw(default) or dev. raw only starts tmux. dev activates environments and starts nvim too."
+    echo "-a : grants access to shared session for user. Run in session on its own"
+    echo "<session_name> : The name of the session. Not necesasry if for -l and -a."
+    exit 0
+fi
 OPTSTRING="slt:a:"
 TM=tmux
 DEV=false
-RAW=false
+RAW=true
 while getopts $OPTSTRING opt; do
     case $opt in
         s)
@@ -17,10 +26,12 @@ while getopts $OPTSTRING opt; do
             if [[ $OPTARG == "dev" ]]; then
                 #$TM new-session -A -s $1 -n $1 -c $dir nvim
                 DEV=true
+                RAW=false
                 echo dev
             fi
             if [[ $OPTARG == "raw" ]]; then
                 RAW=true
+                DEV=false
                 echo raw
             fi
             ;;
