@@ -38,6 +38,7 @@ while getopts $OPTSTRING opt; do
         a)
             chmod 777 /var/tmux/shared-session
             tmux server-access -a $OPTARG
+            exit 0
             ;;
     esac
 done
