@@ -23,7 +23,6 @@ end
 function M.OpenSql(opts)
     os.execute('tmux split-window -v -f -l 15 -c "#{pane_current_path}"')
     os.execute("tmux send-keys -t 2 'db " .. opts.fargs[1] .. "' C-m")
-    os.execute([[tmux send-keys -t 2 'set sqlprompt "_USER @ _CONNECT_IDENTIFIER> "' C-m]])
 end
 
 return M
