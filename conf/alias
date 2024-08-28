@@ -39,9 +39,9 @@ function db()
     filename=$(mktemp)
     cat > $filename <<- EOM
 connect $user/"$pwd"@$db
---set sqlprompt "_USER'@'_CONNECT_IDENTIFIER> "
+set sqlprompt "_USER'@'_CONNECT_IDENTIFIER> "
 EOM
     echo $filename
-    gqlplus /nolog @$filename
+    rlwrap sqlplus /nolog @$filename
     rm $filename
 }
