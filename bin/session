@@ -1,5 +1,15 @@
 #!/bin/bash
 
+ALLOWED_TYPES=("dev" "ipp" "powi" "raw")
+contains() {
+    needle=$1
+    for t in ${ALLOWED_TYPES[@]}; do
+        if [[ $t == $needle ]]; then
+            return 1
+        fi
+    done
+    return 0
+}
 if [[ $# == 0 ]]; then
     echo "session [-s] [-l] [-t raw/dev] [-a <user>] [<session_name>]"
     echo "-s : Create a shared session. Only one allowed"
@@ -13,6 +23,7 @@ OPTSTRING="slt:a:"
 TM=tmux
 DEV=false
 RAW=true
+TYPE="raw"
 while getopts $OPTSTRING opt; do
     case $opt in
         s)
@@ -23,16 +34,12 @@ while getopts $OPTSTRING opt; do
             exit 0
             ;;
         t)
-            if [[ $OPTARG == "dev" ]]; then
-                #$TM new-session -A -s $1 -n $1 -c $dir nvim
-                DEV=true
-                RAW=false
-                echo dev
-            fi
-            if [[ $OPTARG == "raw" ]]; then
-                RAW=true
-                DEV=false
-                echo raw
+            TYPE="$OPTARG"
+            contains $TYPE
+            x=$?
+            if [[ $x != 1 ]]; then
+                echo $TYPE must be one of ${ALLOWED_TYPES[@]}
+                exit 0
             fi
             ;;
         a)
@@ -53,7 +60,7 @@ while [[ $i -le $j ]]; do
     i=$((i+1));
     shift 1;
 done
-if [[ "$DEV" == true ]]; then
+if [[ "$TYPE" == "dev" ]]; then
     if [[ "$NAME" =~ ^[./~] ]]; then
         DIR=$NAME
         $NAME=default
@@ -67,8 +74,40 @@ if [[ "$DEV" == true ]]; then
     $TM send-keys -t $NAME "nvim" C-m
     $TM attach-session -t $NAME
 fi
-if [[ "$RAW" == true ]]; then
+if [[ "$TYPE" == "raw" ]]; then
     $TM new-session -A -s $NAME -n $NAME
+fi
+if [[ "$TYPE" == "ipp" ]]; then
+    NAME=ipp
+    $TM new-session -A -s $NAME -n $NAME -d \; \
+        split-window -h \; split-window -h \; \
+        select-layout even-horizontal\; \
+        select-pane -t 1 \; split-window -v \; \
+        select-pane -t 3 \; split-window -v \; \
+        select-pane -t 5 \; split-window -v \; \
+        set-window-option synchronize-panes on \; \
+        send-keys "ssh roetsm@powi" C-m \; set-window-option synchronize-panes off \; \
+        select-pane -t 1 \; send-keys "ssh roetsm@mp2vlsa404" C-m\; \
+        select-pane -t 2 \; send-keys "ssh roetsm@mp2vlsa404" C-m\; \
+        select-pane -t 3 \; send-keys "ssh roetsm@mp2vlsa441" C-m\; \
+        select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa441" C-m\; \
+        select-pane -t 5 \; send-keys "ssh roetsm@mp2vlsa442" C-m\; \
+        select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa442" C-m\; \
+        select-pane -t 2 \; send-keys "ssh roetsm@mp2vlsa403" C-m\; \
+        select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa443" C-m\; \
+        select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa444" C-m\;
+
+    $TM attach-session -t $NAME
+fi
+if [[ "$TYPE" == "powi" ]]; then
+    NAME=powi
+    $TM new-session -A -s $NAME -n $NAME -d \; \
+        split-window -h \; split-window -v \; \
+        select-pane -t 2 \; send-keys "ssh roetsm@powi" C-m \; send-keys "top" C-m\; \
+        select-pane -t 3 \; send-keys "ssh roetsm@powi" C-m \; \
+        select-pane -t 1 \; send-keys "ssh roetsm@powi" C-m \; send-keys "become web" C-m\; \
+        send-keys "dockerps" C-m \;
+    $TM attach-session -t $NAME
 fi
 
 # if [ "$1" == "detach" ]; then
