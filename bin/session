@@ -63,16 +63,16 @@ done
 if [[ "$TYPE" == "dev" ]]; then
     if [[ "$NAME" =~ ^[./~] ]]; then
         DIR=$NAME
-        $NAME=default
+        $NAME=dev-default
     else
         DIR=/data/code/$NAME
     fi
-    $TM new-session -A -s $NAME -n $NAME -c $DIR -d
+    $TM new-session -A -s dev-$NAME -n $NAME -c $DIR -d
     if [[ -f $DIR/.venv ]]; then
         $TM send-keys -t $NAME "source .venv/bin/activate" C-m
     fi
     $TM send-keys -t $NAME "nvim" C-m
-    $TM attach-session -t $NAME
+    $TM attach-session -t dev-$NAME
 fi
 if [[ "$TYPE" == "raw" ]]; then
     $TM new-session -A -s $NAME -n $NAME
