@@ -104,9 +104,9 @@ if [[ "$TYPE" == "powi" ]]; then
     $TM new-session -A -s $NAME -n $NAME -d \; \
         split-window -h \; split-window -v \; \
         select-pane -t 2 \; send-keys "ssh roetsm@powi" C-m \; send-keys "top" C-m\; \
-        select-pane -t 3 \; send-keys "ssh roetsm@powi" C-m \; \
+        select-pane -t 3 \; send-keys "ssh roetsm@powi" C-m \; send-keys "df -h" C-m\; \
         select-pane -t 1 \; send-keys "ssh roetsm@powi" C-m \; send-keys "become web" C-m\; \
-        send-keys "dockerps" C-m \;
+        resize-pane -R 5 \; send-keys "dockerps" C-m \;
     $TM attach-session -t $NAME
 fi
 
