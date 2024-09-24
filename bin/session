@@ -68,7 +68,7 @@ if [[ "$TYPE" == "dev" ]]; then
         DIR=/data/code/$NAME
     fi
     $TM new-session -A -s dev-$NAME -n $NAME -c $DIR -d
-    if [[ -f $DIR/.venv ]]; then
+    if [[ -d $DIR/.venv ]]; then
         $TM send-keys -t $NAME "source .venv/bin/activate" C-m
     fi
     $TM send-keys -t $NAME "nvim" C-m
