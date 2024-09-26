@@ -25,7 +25,8 @@ ex ()
 }
 
 source ~/scripts/conf/alias
-export PATH=$PATH:/data/code/environments/bin
+export POWI_ENV_PATH=/data/code/environments
+export PATH=$PATH:$POWI_ENV_PATH/bin
 export EDITOR=nvim
 eval "$(zoxide init bash)"
 eval "$(fzf --bash)"
