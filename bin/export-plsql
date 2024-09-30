@@ -1,0 +1,48 @@
+#!/bin/bash
+
+
+filename=$(mktemp)
+output="$5"
+    
+source ~/.db.sh
+if [ "$1" == "prdme" ]; then
+    user=${PRDME[user]}
+    db=${PRDME[db]}
+    pwd=${PRDME[pwd]}
+fi
+if [ "$1" == "prdsy" ]; then
+    user=${PRDSY[user]}
+    db=${PRDSY[db]}
+    pwd=${PRDSY[pwd]}
+fi
+if [ "$1" == "devme" ]; then
+    user=${DEVME[user]}
+    db=${DEVME[db]}
+    pwd=${DEVME[pwd]}
+fi
+if [ "$1" == "devsy" ]; then
+    user=${DEVSY[user]}
+    db=${DEVSY[db]}
+    pwd=${DEVSY[pwd]}
+fi
+lower_owner=$(echo "$2" | tr '[:upper:]' '[:lower:]')
+lower_name=$(echo "$3" | tr '[:upper:]' '[:lower:]')
+lower_type=$(echo "$4" | tr '[:upper:]' '[:lower:]')
+cat > $filename <<- EOM
+connect $user/"$pwd"@$db
+set sqlprompt "_USER'@'_CONNECT_IDENTIFIER> "
+set heading off
+set trimout on
+set trimspool on
+set linesize 220
+set pagesize 0
+set feedback off
+spool $output
+select 'create or replace $lower_type $lower_owner.$lower_name' from dual;
+select text from all_source where owner = '$2' and name = '$3' and type = '$4' and line >= 2;
+spool off
+quit
+EOM
+sqlplus /nolog @$filename
+echo $output
+rm $filename
