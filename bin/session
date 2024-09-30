@@ -15,11 +15,12 @@ if [[ $# == 0 ]]; then
     echo "-s : Create a shared session. Only one allowed"
     echo "-l : List sessions. With -s, list shared sessions. -s must be first then"
     echo "-t : raw(default) or dev. raw only starts tmux. dev activates environments and starts nvim too."
-    echo "-a : grants access to shared session for user. Run in session on its own"
+    echo "-g : grants access to shared session for user. Run in session on its own"
+    echo "-a : attach to given session."
     echo "<session_name> : The name of the session. Not necesasry if for -l and -a."
     exit 0
 fi
-OPTSTRING="slt:a:"
+OPTSTRING="slt:g:a:"
 TM=tmux
 DEV=false
 RAW=true
@@ -43,6 +44,10 @@ while getopts $OPTSTRING opt; do
             fi
             ;;
         a)
+            $TM attach-session -t $OPTARG
+            exit 0
+            ;;
+        g)
             chmod 777 /var/tmux/shared-session
             tmux server-access -a $OPTARG
             exit 0
@@ -61,7 +66,7 @@ while [[ $i -le $j ]]; do
     shift 1;
 done
 if [[ "$TYPE" == "dev" ]]; then
-    if [[ "$NAME" =~ ^[./~] ]]; then
+    if [[ "$NAME" =~ ^[\./~] ]]; then
         DIR=$NAME
         $NAME=dev-default
     else
