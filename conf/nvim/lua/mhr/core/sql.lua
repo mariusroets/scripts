@@ -19,9 +19,8 @@ end
 
 function M.disable_diff()
     vim.cmd("diffoff")
-    vim.cmd("b#")
-    vim.cmd("diffoff")
     vim.cmd("quit")
+    vim.cmd("diffoff")
 end
 
 return M
