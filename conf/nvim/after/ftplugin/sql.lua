@@ -23,6 +23,6 @@ vim.api.nvim_create_user_command("RunSql",
     end,
     {})
 
-vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>RunSql<cr>')
-vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>RunSql<cr>')
-vim.keymap.set('n', '<F8>', '<cmd>set ft=plsql<cr>')
+vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>RunSql<cr>', { buffer = true })
+vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>RunSql<cr>', { buffer = true })
+vim.keymap.set('n', '<F8>', '<cmd>set ft=plsql<cr>', { buffer = true })

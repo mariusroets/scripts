@@ -28,7 +28,7 @@ vim.api.nvim_create_user_command("Compile",
 vim.api.nvim_create_user_command('Compare', sql.get_stored_proc_def, {nargs = 1})
 vim.api.nvim_create_user_command('DisableDiff', sql.disable_diff, {})
 
-vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>Compile<cr>')
-vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>Compile<cr>')
-vim.keymap.set('n', '<F8>', '<cmd>set ft=sql<cr>')
-vim.keymap.set('n', '<F7>', '<cmd>DisableDiff<cr>')
+vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>Compile<cr>', { buffer = true })
+vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>Compile<cr>', { buffer = true })
+vim.keymap.set('n', '<F8>', '<cmd>set ft=sql<cr>', { buffer = true })
+vim.keymap.set('n', '<F7>', '<cmd>DisableDiff<cr>', { buffer = true })
