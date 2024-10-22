@@ -25,7 +25,11 @@ vim.api.nvim_create_user_command("Compile",
     end,
     {})
 
-vim.api.nvim_create_user_command('Compare', sql.get_stored_proc_def, {nargs = 1})
+local function get_stored_proc_def(opts)
+    sql.get_stored_proc_def(opts.fargs[1], opts.fargs[2], opts.fargs[3], opts.fargs[4])
+end
+vim.api.nvim_create_user_command('Compare', sql.get_and_diff_stored_proc, {nargs = 1})
+vim.api.nvim_create_user_command('GetStoredProc', get_stored_proc_def, {nargs = "*"})
 vim.api.nvim_create_user_command('DisableDiff', sql.disable_diff, {})
 
 vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>Compile<cr>', { buffer = true })
