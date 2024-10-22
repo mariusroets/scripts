@@ -28,6 +28,9 @@ fi
 lower_owner=$(echo "$2" | tr '[:upper:]' '[:lower:]')
 lower_name=$(echo "$3" | tr '[:upper:]' '[:lower:]')
 lower_type=$(echo "$4" | tr '[:upper:]' '[:lower:]')
+upper_owner=$(echo "$2" | tr '[:lower:]' '[:upper:]')
+upper_name=$(echo "$3" | tr '[:lower:]' '[:upper:]')
+upper_type=$(echo "$4" | tr '[:lower:]' '[:upper:]')
 cat > $filename <<- EOM
 connect $user/"$pwd"@$db
 set heading off
@@ -39,13 +42,13 @@ set feedback off
 set long 4000
 set echo off
 spool $output
-select 'create or replace $lower_type $lower_owner.$lower_name' from dual;
+select 'create or replace $lower_type $lower_owner.$lower_name as' from dual;
 EOM
 
-if [ "$4" == "VIEW" ]; then
-    echo "select text from all_views where view_name = '$3' and owner = '$2';" >> $filename
+if [ "$upper_type" == "VIEW" ]; then
+    echo "select text from all_views where view_name = '$upper_name' and owner = '$upper_owner';" >> $filename
 else
-    echo "select text from all_source where owner = '$2' and name = '$3' and type = '$4' and line >= 2;" >> $filename
+    echo "select text from all_source where owner = '$upper_owner' and name = '$upper_name' and type = '$upper_type' and line >= 2;" >> $filename
 fi
 
 cat >> $filename <<- EOM
