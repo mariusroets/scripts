@@ -2,35 +2,40 @@
 
 if [ -z "$TMUX" ]; then
     echo "This command requires you to be connected. Connect to one of the session below, or create a new one"
-    session list
+    session -l
     exit 1
 fi
-if [ "$1" == "python" ]; then
-    CURRENT_SESSION=`tmux display-message -p '#S'`
-    if [ "$CURRENT_SESSION" != "prog" ]; then
-        echo "Warning: The python window should be created in the 'prog' session if sending scripts to it is required"
-        tmux new-window -d -c /data/python -n python
-    else
-        tmux new-window -c /data/python -n python
-    fi
-elif [ "$1" == "server" ]; then
-    tmux new-window -d -n powi "ssh roetsm@powi"
-    tmux new-window -d -n themis "ssh roetsm@themis"
-elif [ "$1" == "dev" ]; then
-    tmux new-window -d -n powidev "ssh roetsm@powidev"
-    tmux new-window -d -n themisdev "ssh mroets@themisdev"
-elif [ "$1" == "themis" ]; then
-    tmux new-window -n themis "ssh roetsm@themis"
-elif [ "$1" == "themisold" ]; then
-    tmux new-window -n themis-old "ssh mroets@themis-old"
-elif [ "$1" == "powi" ]; then
-    tmux new-window -n powi "ssh roetsm@powi"
-elif [ "$1" == "powiold" ]; then
-    tmux new-window -n powi-old "ssh roetsm@powi-old"
-elif [ "$1" == "powiqa" ]; then
-    tmux new-window -n powiqa "ssh roetsm@powiqa"
-elif [ "$1" == "themisqa" ]; then
-    tmux new-window -n themisqa "ssh roetsm@themisqa"
-else
-    tmux new-window -n $1 
-fi
+TM=tmux
+case $1 in
+    powi)
+        $TM split-window -h \; split-window -v \; \
+        select-pane -t 2 \; send-keys "ssh roetsm@powi" C-m \; send-keys "top" C-m\; \
+        select-pane -t 3 \; send-keys "ssh roetsm@powi" C-m \; send-keys "df -h" C-m\; \
+        select-pane -t 1 \; send-keys "ssh roetsm@powi" C-m \; send-keys "become web" C-m\; \
+        resize-pane -R 5 \; send-keys "dockerps" C-m \;
+        ;;
+    themis)
+        $TM split-window -h \; \
+        select-pane -t 1 \; send-keys "ssh roetsm@themis" C-m \; send-keys "become oracle" C-m\; \
+        select-pane -t 2 \; send-keys "ssh roetsm@themisdev" C-m \; send-keys "become oracle" C-m\;
+        ;;
+    ipp)
+        $TM split-window -h \; split-window -h \; \
+        select-layout even-horizontal\; \
+        select-pane -t 1 \; split-window -v \; \
+        select-pane -t 3 \; split-window -v \; \
+        select-pane -t 5 \; split-window -v \; \
+        set-window-option synchronize-panes on \; \
+        send-keys "ssh roetsm@powi" C-m \; set-window-option synchronize-panes off \; \
+        select-pane -t 1 \; send-keys "ssh roetsm@mp2vlsa404" C-m\; \
+        select-pane -t 2 \; send-keys "ssh roetsm@mp2vlsa404" C-m\; \
+        select-pane -t 3 \; send-keys "ssh roetsm@mp2vlsa441" C-m\; \
+        select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa441" C-m\; \
+        select-pane -t 5 \; send-keys "ssh roetsm@mp2vlsa442" C-m\; \
+        select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa442" C-m\; \
+        select-pane -t 2 \; send-keys "ssh roetsm@mp2vlsa403" C-m\; \
+        select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa443" C-m\; \
+        select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa444" C-m\;
+        ;;
+esac
+

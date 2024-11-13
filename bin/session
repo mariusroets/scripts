@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ALLOWED_TYPES=("dev" "ipp" "powi" "raw")
+ALLOWED_TYPES=("dev" "ipp" "powi" "raw", "themis")
 contains() {
     needle=$1
     for t in ${ALLOWED_TYPES[@]}; do
@@ -14,7 +14,7 @@ if [[ $# == 0 ]]; then
     echo "session [-s] [-l] [-t raw/dev] [-a <user>] [<session_name>]"
     echo "-s : Create a shared session. Only one allowed"
     echo "-l : List sessions. With -s, list shared sessions. -s must be first then"
-    echo "-t : raw(default) or dev. raw only starts tmux. dev activates environments and starts nvim too."
+    echo "-t : raw(default) or one of ${ALLOWED_TYPES[@]}. dev activates environments and starts nvim too."
     echo "-g : grants access to shared session for user. Run in session on its own"
     echo "-a : attach to given session."
     echo "<session_name> : The name of the session. Not necesasry if for -l and -a."
@@ -85,33 +85,19 @@ fi
 if [[ "$TYPE" == "ipp" ]]; then
     NAME=ipp
     $TM new-session -A -s $NAME -n $NAME -d \; \
-        split-window -h \; split-window -h \; \
-        select-layout even-horizontal\; \
-        select-pane -t 1 \; split-window -v \; \
-        select-pane -t 3 \; split-window -v \; \
-        select-pane -t 5 \; split-window -v \; \
-        set-window-option synchronize-panes on \; \
-        send-keys "ssh roetsm@powi" C-m \; set-window-option synchronize-panes off \; \
-        select-pane -t 1 \; send-keys "ssh roetsm@mp2vlsa404" C-m\; \
-        select-pane -t 2 \; send-keys "ssh roetsm@mp2vlsa404" C-m\; \
-        select-pane -t 3 \; send-keys "ssh roetsm@mp2vlsa441" C-m\; \
-        select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa441" C-m\; \
-        select-pane -t 5 \; send-keys "ssh roetsm@mp2vlsa442" C-m\; \
-        select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa442" C-m\; \
-        select-pane -t 2 \; send-keys "ssh roetsm@mp2vlsa403" C-m\; \
-        select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa443" C-m\; \
-        select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa444" C-m\;
-
+        send-keys "window ipp" C-m\;
     $TM attach-session -t $NAME
 fi
 if [[ "$TYPE" == "powi" ]]; then
     NAME=powi
     $TM new-session -A -s $NAME -n $NAME -d \; \
-        split-window -h \; split-window -v \; \
-        select-pane -t 2 \; send-keys "ssh roetsm@powi" C-m \; send-keys "top" C-m\; \
-        select-pane -t 3 \; send-keys "ssh roetsm@powi" C-m \; send-keys "df -h" C-m\; \
-        select-pane -t 1 \; send-keys "ssh roetsm@powi" C-m \; send-keys "become web" C-m\; \
-        resize-pane -R 5 \; send-keys "dockerps" C-m \;
+        send-keys "window powi" C-m\;
+    $TM attach-session -t $NAME
+fi
+if [[ "$TYPE" == "themis" ]]; then
+    NAME=themis
+    $TM new-session -A -s $NAME -n $NAME -d \; \
+        send-keys "window themis" C-m\;
     $TM attach-session -t $NAME
 fi
 
