@@ -34,5 +34,5 @@ vim.api.nvim_create_user_command('DisableDiff', sql.disable_diff, {})
 
 vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>Compile<cr>', { buffer = true })
 vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>Compile<cr>', { buffer = true })
-vim.keymap.set('n', '<F8>', '<cmd>set ft=sql<cr>', { buffer = true })
-vim.keymap.set('n', '<F7>', '<cmd>DisableDiff<cr>', { buffer = true })
+vim.keymap.set('n', '<F10>', '<cmd>set ft=sql<cr>', { buffer = true })
+vim.keymap.set('n', '<F11>', '<cmd>DisableDiff<cr>', { buffer = true })
