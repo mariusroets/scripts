@@ -65,41 +65,32 @@ while [[ $i -le $j ]]; do
     i=$((i+1));
     shift 1;
 done
-if [[ "$TYPE" == "dev" ]]; then
-    if [[ "$NAME" =~ ^[\./~] ]]; then
-        DIR=$NAME
-        $NAME=dev-default
-    else
-        DIR=/data/code/$NAME
-    fi
-    $TM new-session -A -s dev-$NAME -n $NAME -c $DIR -d
-    if [[ -d $DIR/.venv ]]; then
-        $TM send-keys -t $NAME "source .venv/bin/activate" C-m
-    fi
-    $TM send-keys -t $NAME "nvim" C-m
-    $TM attach-session -t dev-$NAME
-fi
-if [[ "$TYPE" == "raw" ]]; then
-    $TM new-session -A -s $NAME -n $NAME
-fi
-if [[ "$TYPE" == "ipp" ]]; then
-    NAME=ipp
-    $TM new-session -A -s $NAME -n $NAME -d \; \
-        send-keys "window ipp" C-m\;
-    $TM attach-session -t $NAME
-fi
-if [[ "$TYPE" == "powi" ]]; then
-    NAME=powi
-    $TM new-session -A -s $NAME -n $NAME -d \; \
-        send-keys "window powi" C-m\;
-    $TM attach-session -t $NAME
-fi
-if [[ "$TYPE" == "themis" ]]; then
-    NAME=themis
-    $TM new-session -A -s $NAME -n $NAME -d \; \
-        send-keys "window themis" C-m\;
-    $TM attach-session -t $NAME
-fi
+
+case $TYPE in
+    dev)
+        if [[ "$NAME" =~ ^[\./~] ]]; then
+            DIR=$NAME
+            $NAME=dev-default
+        else
+            DIR=/data/code/$NAME
+        fi
+        $TM new-session -A -s dev-$NAME -n $NAME -c $DIR -d
+        if [[ -d $DIR/.venv ]]; then
+            $TM send-keys -t $NAME "source .venv/bin/activate" C-m
+        fi
+        $TM send-keys -t $NAME "nvim" C-m
+        $TM attach-session -t dev-$NAME
+        ;;
+    raw)
+        $TM new-session -A -s $NAME -n $NAME
+        ;;
+    *)
+        NAME=$TYPE
+        $TM new-session -A -s $NAME -n $NAME -d \; \
+            send-keys "window $NAME" C-m\;
+        $TM attach-session -t $NAME
+        ;;
+esac
 
 # if [ "$1" == "detach" ]; then
 #     tmux detach
