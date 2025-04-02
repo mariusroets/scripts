@@ -2,6 +2,33 @@ vim.g.mapleader = " "
 
 local keymap = vim.keymap -- for conciseness
 
+vim.g.display_layout = 1
+
+local function toggle_view()
+    vim.g.display_layout = vim.g.display_layout + 1
+    if vim.g.display_layout > 3 then
+        vim.g.display_layout = 1
+    end
+    if vim.g.display_layout == 1 then
+        if #vim.api.nvim_list_wins() > 1 then
+            vim.cmd("quit")
+        end
+        vim.cmd("NvimTreeClose")
+        vim.cmd("AerialClose")
+    elseif vim.g.display_layout == 2 then
+        if #vim.api.nvim_list_wins() > 1 then
+            vim.cmd("quit")
+        end
+        vim.cmd("AerialOpen")
+        vim.cmd("NvimTreeOpen")
+    elseif vim.g.display_layout == 3 then
+        vim.cmd("NvimTreeClose")
+        vim.cmd("AerialClose")
+        vim.cmd.normal(" sv")
+    end
+end
+vim.api.nvim_create_user_command("ToggleViewLayout", toggle_view, {})
+
 keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
@@ -13,6 +40,7 @@ keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" }) -- 
 keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
 keymap.set('n', '<f3>', '<cmd>AerialToggle<cr>', { desc = 'Open Symbol Navigator' })
+keymap.set('n', '<f4>', '<cmd>ToggleViewLayout<cr>', { desc = 'Open in split window mode' })
 keymap.set('n', '<f7>', '@q', { desc = 'Run macro in the q register' })
 keymap.set('n', '<f12>', '<cmd>cd ~/.config/nvim<cr><cmd>e init.lua<cr>', { desc = 'Edit NVim config' })
 keymap.set('n', '<tab>', '<cmd>bnext<cr>' , { desc = 'Go to the next buffer' })
