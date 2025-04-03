@@ -39,3 +39,6 @@ opt.swapfile = false
 
 -- For rendering of markdown used by obsidian.nvim
 opt.conceallevel = 1
+
+opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
