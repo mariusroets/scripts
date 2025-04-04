@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for VM in $(vboxmanage list runningvms | awk -F\{ '{print $2}' | sed -e 's/}//g'); do
+    VMNAME="$(vboxmanage showvminfo ${VM} --machinereadable | awk -F\= '/^name/ {print $2}')"
+    VMIP=$(vboxmanage guestproperty get ${VM} "/VirtualBox/GuestInfo/Net/0/V4/IP" | sed -e 's/Value: //g')
+
+    echo "VM-Name: $VMNAME"
+    echo "   - VM-IP: $VMIP"
+done
