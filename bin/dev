@@ -1,8 +1,0 @@
-#!/bin/bash
-
-SES=session
-if [[ "$2" == "shared" ]]; then
-    SES="session -s"
-fi
-
-$SES -t dev $1
