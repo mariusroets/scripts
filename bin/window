@@ -6,6 +6,10 @@ if [ -z "$TMUX" ]; then
     exit 1
 fi
 TM=tmux
+CURRENT_WINDOW=$($TM display-message -p '#W')
+if [[ $CURRENT_WINDOW != $1 ]]; then
+    $TM rename-window $1
+fi
 case $1 in
     powi)
         $TM split-window -h \; split-window -v \; \
@@ -42,5 +46,14 @@ case $1 in
         select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa443" C-m\; \
         select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa444" C-m\;
         ;;
+    dpowi|packagedev|environments|mhrchess|chessutil|themisdb)
+        DIR=/data/code/$1
+        $TM send-keys "cd $DIR" C-m
+        if [[ -d $DIR/.venv ]]; then
+            $TM send-keys "source .venv/bin/activate" C-m
+        fi
+        $TM send-keys "nvim" C-m
+        ;;
+
 esac
 

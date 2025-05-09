@@ -1,26 +1,63 @@
 #!/bin/bash
 
-ALLOWED_TYPES=("dev" "ipp" "powi" "raw", "themis")
+PREDEFINED_TYPES=("ipp" "powi" "powinew", "themis")
+DEV_TYPES=("dpowi" "packagedev" "environments" "mhrchess" "chessutil" "themisdb")
+
 contains() {
     needle=$1
-    for t in ${ALLOWED_TYPES[@]}; do
+    for t in ${PREDEFINED_TYPES[@]}; do
         if [[ $t == $needle ]]; then
-            return 1
+            return 1 # This a predefined raw session
         fi
     done
-    return 0
+    for t in ${DEV_TYPES[@]}; do
+        if [[ $t == $needle ]]; then
+            return 2 # This is a development session
+        fi
+    done
+    return 0 # This is a undefined raw session
+}
+create_dev_session() {
+    name=$1
+    DIR=/data/code/$name
+    $TM new-session -A -s $name -n $name -d \; \
+        send-keys "window dev $name" C-m\;
+
+    $TM attach-session -t $name
+}
+create_predefined_session() {
+    name=$1
+    $TM new-session -A -s $name -n $name -d \; \
+        send-keys "window $name" C-m\;
+    $TM attach-session -t $name
+}
+create_raw_session() {
+    name=$1
+    $TM new-session -A -s $name -n $name
+}
+attach_session() {
+    name=$1
+    $TM attach-session -t $name
+}
+session_exists() {
+    name=$1
+    $TM has-session -t $name 2>/dev/null
+
+    if [ $? != 0 ]; then
+        return 0
+    fi
+    return 1
 }
 if [[ $# == 0 ]]; then
     echo "session [-s] [-l] [-t raw/dev] [-a <user>] [<session_name>]"
     echo "-s : Create a shared session. Only one allowed"
     echo "-l : List sessions. With -s, list shared sessions. -s must be first then"
-    echo "-t : raw(default) or one of ${ALLOWED_TYPES[@]}. dev activates environments and starts nvim too."
     echo "-g : grants access to shared session for user. Run in session on its own"
     echo "-a : attach to given session."
     echo "<session_name> : The name of the session. Not necesasry if for -l and -a."
     exit 0
 fi
-OPTSTRING="slt:g:a:"
+OPTSTRING="slg:a:"
 TM=tmux
 DEV=false
 RAW=true
@@ -34,17 +71,8 @@ while getopts $OPTSTRING opt; do
             $TM ls
             exit 0
             ;;
-        t)
-            TYPE="$OPTARG"
-            contains $TYPE
-            x=$?
-            if [[ $x != 1 ]]; then
-                echo $TYPE must be one of ${ALLOWED_TYPES[@]}
-                exit 0
-            fi
-            ;;
         a)
-            $TM attach-session -t $OPTARG
+            attach_session $OPTARG
             exit 0
             ;;
         g)
@@ -55,6 +83,7 @@ while getopts $OPTSTRING opt; do
     esac
 done
 NAME=default
+# Get the name that is specified after all the switches
 i=1
 j=$#
 while [[ $i -le $j ]]; do
@@ -66,29 +95,25 @@ while [[ $i -le $j ]]; do
     shift 1;
 done
 
-case $TYPE in
-    dev)
-        if [[ "$NAME" =~ ^[\./~] ]]; then
-            DIR=$NAME
-            $NAME=dev-default
-        else
-            DIR=/data/code/$NAME
-        fi
-        $TM new-session -A -s dev-$NAME -n $NAME -c $DIR -d
-        if [[ -d $DIR/.venv ]]; then
-            $TM send-keys -t $NAME "source .venv/bin/activate" C-m
-        fi
-        $TM send-keys -t $NAME "nvim" C-m
-        $TM attach-session -t dev-$NAME
+contains $NAME
+x=$?
+
+session_exists $NAME
+exists=$?
+if [[ $exists == 1 ]]; then
+    attach_session $NAME
+    exit 0
+fi
+
+case $x in
+    2)
+        create_dev_session $NAME
         ;;
-    raw)
-        $TM new-session -A -s $NAME -n $NAME
+    1)
+        create_predefined_session $NAME
         ;;
     *)
-        NAME=$TYPE
-        $TM new-session -A -s $NAME -n $NAME -d \; \
-            send-keys "window $NAME" C-m\;
-        $TM attach-session -t $NAME
+        create_raw_session $NAME
         ;;
 esac
 
