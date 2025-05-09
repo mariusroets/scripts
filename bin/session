@@ -19,9 +19,8 @@ contains() {
 }
 create_dev_session() {
     name=$1
-    DIR=/data/code/$name
     $TM new-session -A -s $name -n $name -d \; \
-        send-keys "window dev $name" C-m\;
+        send-keys "window $name" C-m\;
 
     $TM attach-session -t $name
 }
