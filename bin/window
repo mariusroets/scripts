@@ -14,6 +14,11 @@ case $1 in
         select-pane -t 1 \; send-keys "ssh roetsm@powi" C-m \; send-keys "become web" C-m\; \
         resize-pane -R 5 \; send-keys "dockerps" C-m \;
         ;;
+    powinew)
+        $TM split-window -h \; \
+        select-pane -t 1 \; send-keys "ssh roetsm@powi1" C-m \; send-keys "become web" C-m\; \
+        select-pane -t 2 \; send-keys "ssh roetsm@powi2" C-m \; send-keys "become web" C-m\;
+        ;;
     themis)
         $TM split-window -h \; \
         select-pane -t 1 \; send-keys "ssh roetsm@themis" C-m \; send-keys "become oracle" C-m\; \
