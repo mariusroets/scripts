@@ -2,3 +2,5 @@ customCommands:
   - key: '<c-p>'
     context: "global"
     command: 'git push -o ci.skip'
+git:
+  autoForwardBranches: none
