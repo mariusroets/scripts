@@ -46,6 +46,7 @@ return {
         "c",
         "cpp",
         "go",
+        "fortran",
       },
       incremental_selection = {
         enable = true,
