@@ -48,7 +48,7 @@ EOM
 if [ "$upper_type" == "VIEW" ]; then
     echo "select text from all_views where view_name = '$upper_name' and owner = '$upper_owner';" >> $filename
 else
-    echo "select text from all_source where owner = '$upper_owner' and name = '$upper_name' and type = '$upper_type' and line >= 2;" >> $filename
+    echo "select text from all_source where owner = '$upper_owner' and name = '$upper_name' and type = '$upper_type' and line >= 2 order by line;" >> $filename
 fi
 
 cat >> $filename <<- EOM
