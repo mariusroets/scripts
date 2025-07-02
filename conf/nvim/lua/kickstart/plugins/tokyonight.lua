@@ -18,6 +18,8 @@ return {
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'tokyonight-night'
+      -- Set the color column colour to be the same as the cursor line
+      vim.api.nvim_set_hl(0, "ColorColumn", { link = "CursorLine" })
     end,
   },
 }
