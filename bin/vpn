@@ -1,11 +1,13 @@
 #!/bin/bash
 
-vpnpid=`pidof openconnect`
-group="Eskom"
-server="ssl"
+USERNAME="roetsm"
+AUTHGROUP="Eskom"
+VPN_SERVER="ssl.eskom.co.za"
+VPNPID=`pidof openconnect`
+
 if [ "$1" == "status" ]; then
-    if [ -n "$vpnpid" ]; then
-        echo "VPN is running with pid $vpnpid"
+    if [ -n "$VPNPID" ]; then
+        echo "VPN is running with pid $VPNPID"
     else
         echo "VPN is not running"
     fi
@@ -14,8 +16,30 @@ elif [ "$1" == "vpn" ]; then
     group="ESKOM-SECURE-VPN"
     server="vpn"
 fi
-if [ -n "$vpnpid" ]; then
-    sudo kill -2 $vpnpid
+if [ -n "$VPNPID" ]; then
+    sudo kill -2 $VPNPID
 else
-    sudo openconnect -b -u roetsm --authgroup $group --passwd-on-stdin $server.eskom.co.za
+    echo "Connecting to VPN..."
+    sudo openconnect -b -u $USERNAME --authgroup $AUTHGROUP --passwd-on-stdin $VPN_SERVER
+    VPN_PID=$! # Store PID of the background process
+
+    echo "Waiting for VPN tunnel to establish and tun0 IP to be assigned..."
+    # Loop until tun0 has an IP address
+    VPN_TUN_IP=""
+    for i in $(seq 1 15); do # Try for up to 15 seconds
+        VPN_TUN_IP=$(ip -4 addr show tun0 | grep -oP 'inet \K[\d.]+')
+        if [ -n "$VPN_TUN_IP" ]; then
+            echo "tun0 has IP: $VPN_TUN_IP"
+            break
+        fi
+        sleep 1
+    done
+
+    if [ -z "$VPN_TUN_IP" ]; then
+        echo "Error: tun0 did not get an IP address within the timeout. VPN connection failed?"
+        kill "$VPN_PID" 2>/dev/null # Clean up background openconnect
+        exit 1
+    fi
+    sudo ip route del default dev tun0
+    sudo ip route add 172.0.0.0/8 dev tun0
 fi
