@@ -9,7 +9,7 @@ vim.keymap.set("n", "<leader>sl", "<cmd>SessionSearch<CR>", { desc = "Open sessi
 
 vim.keymap.set('n', '<f3>', '<cmd>AerialToggle<cr>', { desc = 'Open Symbol Navigator' })
 vim.keymap.set('n', '<f4>', '<C-w>v', { desc = 'Open in split window mode' })
-vim.keymap.set('n', '<f5>', '<cmd>CodeCompanionChat<cr>', { desc = 'Open the Code Companion chat window' })
+vim.keymap.set('n', '<f5>', '<cmd>CodeCompanionChat Toggle<cr>', { desc = 'Open the Code Companion chat window' })
 vim.keymap.set('n', '<f7>', '@q', { desc = 'Run macro in the q register' })
 vim.keymap.set('n', '<f12>', '<cmd>cd ~/.config/nvim<cr><cmd>e init.lua<cr>', { desc = 'Edit NVim config' })
 vim.keymap.set('n', '<tab>', '<cmd>bnext<cr>', { desc = 'Go to the next buffer' })
