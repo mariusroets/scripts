@@ -9,14 +9,16 @@ return {
     config = function()
       require("codecompanion").setup({
         adapters = {
-          -- Gemini adapter configuration
-          gemini = function()
-            return require("codecompanion.adapters").extend("gemini", {
-              -- It will automatically pick up GEMINI_API_KEY from environment
-              -- api_key = os.getenv("GEMINI_API_KEY"), -- Uncomment if you prefer explicit env var access
-              model = "gemini-2.0-flash", -- Or "gemini-1.5-flash", "gemini-1.5-pro", etc. Choose your preferred model.
-            })
-          end,
+          http = {
+              -- Gemini adapter configuration
+              gemini = function()
+                return require("codecompanion.adapters").extend("gemini", {
+                  -- It will automatically pick up GEMINI_API_KEY from environment
+                  -- api_key = os.getenv("GEMINI_API_KEY"), -- Uncomment if you prefer explicit env var access
+                  model = "gemini-2.0-flash", -- Or "gemini-1.5-flash", "gemini-1.5-pro", etc. Choose your preferred model.
+                })
+              end,
+          }
           -- You can add other adapters here like openai, anthropic, etc.
         },
         -- Set default strategies to use Gemini
