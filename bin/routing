@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo ip route del 172.24.229.0/24 dev eno1
+sudo ip route del default via 172.24.229.1 dev eno1
 sudo ip route add 172.17.0.0/16 dev eno1 
 sudo ip route add 172.16.0.0/16 dev eno1 
 sudo ip route add 172.20.0.0/16 dev eno1 
