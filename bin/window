@@ -46,7 +46,7 @@ case $1 in
         select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa443" C-m\; \
         select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa444" C-m\;
         ;;
-    dpowi|packagedev|environments|mhrchess|chessutil|themisdb|marketsim)
+    dpowi|packagedev|environments|mhrchess|chessutil|themisdb|marketsim|portal)
         DIR=/data/code/$1
         $TM send-keys "cd $DIR" C-m
         if [[ -d $DIR/.venv ]]; then
