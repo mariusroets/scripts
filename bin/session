@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PREDEFINED_TYPES=("ipp" "powi" "powinew" "themis")
-DEV_TYPES=("dpowi" "packagedev" "environments" "mhrchess" "chessutil" "themisdb" "marketsim")
+DEV_TYPES=("dpowi" "packagedev" "environments" "mhrchess" "chessutil" "themisdb" "marketsim" "sawem-so-platform")
 
 contains() {
     needle=$1
