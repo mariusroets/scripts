@@ -1,6 +1,6 @@
 local M = {}
 
-function M.get_stored_proc_def(db, obj_type, owner, name)
+function M.oracle_get_ddl(db, obj_type, owner, name)
     os.execute("export-plsql " .. db .. " " .. owner .. " " .. name .. " '" .. obj_type .. "' /tmp/neovim-temp.sql &> /dev/null")
     vim.cmd("edit /tmp/neovim-temp.sql")
 end
@@ -12,7 +12,7 @@ function M.get_current_stored_proc(opts)
     local line = vim.fn.getline(line_nr)
     local values = vim.fn.matchlist(line, pattern)
     vim.print(values)
-    M.get_stored_proc_def(opts.fargs[1], values[2], values[3], values[4])
+    M.oracle_get_ddl(opts.fargs[1], values[2], values[3], values[4])
 end
 
 function M.diff_stored_proc()
@@ -24,7 +24,7 @@ function M.diff_stored_proc()
     vim.cmd("b#")
 end
 
-function M.get_and_diff_stored_proc(opts)
+function M.get_and_diff_ddl(opts)
     M.get_current_stored_proc(opts)
     M.diff_stored_proc()
 end
