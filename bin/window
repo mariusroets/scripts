@@ -46,7 +46,15 @@ case $1 in
         select-pane -t 4 \; send-keys "ssh roetsm@mp2vlsa443" C-m\; \
         select-pane -t 6 \; send-keys "ssh roetsm@mp2vlsa444" C-m\;
         ;;
-    dpowi|packagedev|environments|mhrchess|chessutil|themisdb|marketsim|sawem-so-platform)
+    dpowi|environments|sawem-so-platform|python-packages)
+        DIR=/data/code/platform/$1
+        $TM send-keys "cd $DIR" C-m
+        if [[ -d $DIR/.venv ]]; then
+            $TM send-keys "export PYTHONPATH=$POWI_ENV_PATH/../python-packages/devlinks:$POWI_ENV_PATH/../python-packages/.venv/lib/python3.13/site-packages" C-m
+        fi
+        $TM send-keys "nvim" C-m
+        ;;
+    mhrchess|chessutil|marketsim|themisdb)
         DIR=/data/code/$1
         $TM send-keys "cd $DIR" C-m
         if [[ -d $DIR/.venv ]]; then
