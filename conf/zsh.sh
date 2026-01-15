@@ -1,6 +1,6 @@
 
 source ~/scripts/conf/alias
-export POWI_ENV_PATH=/data/code/environments
+export POWI_ENV_PATH=/data/code/platform/environments
 export PATH=$PATH:$POWI_ENV_PATH/bin
 export EDITOR=nvim
 # Make 'less' exit when output is less than one screen, also handling colour codes correctly
