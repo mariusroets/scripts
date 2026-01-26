@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [ "$1" == "prdme" ]; then
+    user=roetsm
+    db=pps1
+    server=themis
+    port=1521
+    pwd=${ROETSM_THEMISDEV_PWD}
+    dbtype=oracle
+fi
+if [ "$1" == "prdsy" ]; then
+    user=system
+    db=pps1
+    server=themis
+    port=1521
+    pwd=${SYSTEM_THEMISDEV_PWD}
+    dbtype=oracle
+fi
+if [ "$1" == "devme" ]; then
+    user=roetsm
+    db=pps1
+    server=themisdev
+    port=1521
+    pwd=${ROETSM_THEMIS_PWD}
+    dbtype=oracle
+fi
+if [ "$1" == "devsy" ]; then
+    user=system
+    db=pps1
+    server=themisdev
+    port=1521
+    pwd=${SYSTEM_THEMIS_PWD}
+    dbtype=oracle
+fi
+usql $dbtype://$user:$pwd@$server:$port/$db
