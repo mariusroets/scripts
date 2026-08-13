@@ -1,0 +1,31 @@
+#!/bin/bash
+# vpnc-script wrapper: forces a split-tunnel for 172.0.0.0/8 instead of
+# letting the gateway take over the default route.
+#
+# openconnect runs this as root (env vars carry the config, no args), so it
+# needs no sudo and, unlike a post-connect fixup in the calling script, it
+# cannot race vpnc-script's route setup.
+#
+# Suggested install (root-owned, since it is executed as root):
+#   sudo install -o root -g root -m 755 vpnc-split /etc/vpnc/vpnc-split
+# then point openconnect at it with:  -s /etc/vpnc/vpnc-split
+
+# Tell vpnc-script this is a split-include tunnel. It then takes the
+# CISCO_SPLIT_INC branch in do_connect() and adds "172.0.0.0/8 dev tun0"
+# rather than calling set_ipv4_default_route. do_disconnect() removes the
+# same route symmetrically, and never touches the real default route.
+export CISCO_SPLIT_INC=1
+export CISCO_SPLIT_INC_0_ADDR=172.0.0.0
+export CISCO_SPLIT_INC_0_MASK=255.0.0.0
+export CISCO_SPLIT_INC_0_MASKLEN=8
+
+# With the tunnel narrowed to 172/8, the ~290 exclude routes the gateway
+# pushes (each one a separate exec of /usr/bin/ip) are redundant. Dropping
+# them also cuts about a second off connect.
+export CISCO_SPLIT_EXC=
+
+# Note: this only constrains IPv4. If the gateway ever starts handing out an
+# internal IPv6 address, vpnc-script will still add a v6 default via tun0.
+# Today it does not, so nothing to do.
+
+exec /etc/vpnc/vpnc-script "$@"
