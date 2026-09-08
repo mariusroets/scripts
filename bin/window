@@ -28,6 +28,11 @@ case $1 in
         select-pane -t 1 \; send-keys "ssh roetsm@themis" C-m \; send-keys "become oracle" C-m\; \
         select-pane -t 2 \; send-keys "ssh roetsm@themisdev" C-m \; send-keys "become oracle" C-m\;
         ;;
+    sawemqa)
+        $TM split-window -h \; \
+        select-pane -t 1 \; send-keys "ssh roetsm@mp2vlsa403" C-m \; send-keys "become web" C-m\; \
+        select-pane -t 2 \; send-keys "ssh roetsm@mp2vlsa404" C-m \; send-keys "become web" C-m\;
+        ;;
     ipp)
         $TM split-window -h \; split-window -h \; \
         select-layout even-horizontal\; \
