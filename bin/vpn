@@ -3,6 +3,9 @@
 USERNAME="roetsm"
 AUTHGROUP="Eskom"
 VPN_SERVER="ssl.eskom.co.za"
+# Wrapper around /etc/vpnc/vpnc-script that keeps the tunnel split (172/8 only)
+# instead of stealing the default route. Adjust if you install it elsewhere.
+VPNC_SCRIPT="/etc/vpnc/vpnc-split"
 VPNPID=`pidof openconnect`
 
 if [ "$1" == "status" ]; then
@@ -19,27 +22,28 @@ fi
 if [ -n "$VPNPID" ]; then
     sudo kill -2 $VPNPID
 else
-    echo "Connecting to VPN..."
-    sudo openconnect -b -u $USERNAME --authgroup $AUTHGROUP --passwd-on-stdin $VPN_SERVER
-    VPN_PID=$! # Store PID of the background process
-
-    echo "Waiting for VPN tunnel to establish and tun0 IP to be assigned..."
-    # Loop until tun0 has an IP address
-    VPN_TUN_IP=""
-    for i in $(seq 1 15); do # Try for up to 15 seconds
-        VPN_TUN_IP=$(ip -4 addr show tun0 | grep -oP 'inet \K[\d.]+')
-        if [ -n "$VPN_TUN_IP" ]; then
-            echo "tun0 has IP: $VPN_TUN_IP"
-            break
-        fi
-        sleep 1
-    done
-
-    if [ -z "$VPN_TUN_IP" ]; then
-        echo "Error: tun0 did not get an IP address within the timeout. VPN connection failed?"
-        kill "$VPN_PID" 2>/dev/null # Clean up background openconnect
+    if [ ! -x "$VPNC_SCRIPT" ]; then
+        echo "Error: $VPNC_SCRIPT is missing or not executable."
         exit 1
     fi
-    sudo ip route del default dev tun0
-    sudo ip route add 172.0.0.0/8 dev tun0
+
+    echo "Connecting to VPN..."
+    sudo openconnect -b -s "$VPNC_SCRIPT" -u $USERNAME --authgroup $AUTHGROUP --passwd-on-stdin $VPN_SERVER || exit 1
+
+    # openconnect backgrounds itself before it configures the tunnel, so wait
+    # for the split route to show up. This only reads state - the routes are
+    # set up entirely by $VPNC_SCRIPT, so there is nothing to race with.
+    echo "Waiting for VPN tunnel to establish..."
+    for i in $(seq 1 30); do # Try for up to 15 seconds
+        sleep 0.5
+        if ip route show 172.0.0.0/8 dev tun0 2>/dev/null | grep -q .; then
+            echo "Connected as $(ip -4 addr show tun0 | grep -oP 'inet \K[\d.]+'), 172.0.0.0/8 routed via tun0"
+            exit 0
+        fi
+    done
+
+    echo "Error: tunnel did not come up within the timeout. VPN connection failed?"
+    exit 1
 fi
+
+

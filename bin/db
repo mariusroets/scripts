@@ -6,7 +6,7 @@ if [ "$1" == "prdme" ]; then
     server=themis
     port=1521
     pwd=${ROETSM_THEMISDEV_PWD}
-    dbtype=oci
+    dbtype=oracle
 fi
 if [ "$1" == "prdsy" ]; then
     user=system
@@ -14,7 +14,7 @@ if [ "$1" == "prdsy" ]; then
     server=themis
     port=1521
     pwd=${SYSTEM_THEMISDEV_PWD}
-    dbtype=oci
+    dbtype=oracle
 fi
 if [ "$1" == "devme" ]; then
     user=roetsm
@@ -22,7 +22,7 @@ if [ "$1" == "devme" ]; then
     server=themisdev
     port=1521
     pwd=${ROETSM_THEMIS_PWD}
-    dbtype=oci
+    dbtype=oracle
 fi
 if [ "$1" == "devsy" ]; then
     user=system

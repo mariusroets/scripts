@@ -32,6 +32,7 @@ vim.api.nvim_create_user_command('OracleCompare', sql.get_and_diff_ddl, {nargs =
 vim.api.nvim_create_user_command('OracleGetDDL', oracle_get_ddl, {nargs = "*", desc = "Params: <database name> <object type> <owner> <object>"})
 vim.api.nvim_create_user_command('OracleDisableDiff', sql.disable_diff, {})
 
+vim.bo.commentstring = "-- %s"
 vim.keymap.set('n', '<F9>', '<cmd>w<cr><cmd>Compile<cr>', { buffer = true })
 vim.keymap.set('i', '<F9>', '<esc><cmd>w<cr><cmd>Compile<cr>', { buffer = true })
 vim.keymap.set('n', '<F10>', '<cmd>set ft=sql<cr>', { buffer = true })
