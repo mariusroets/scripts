@@ -6,7 +6,9 @@ if [ "$1" == "prdme" ]; then
     server=themis
     port=1521
     pwd=${ROETSM_THEMISDEV_PWD}
+    sid=pps1
     dbtype=oracle
+    colour=31
 fi
 if [ "$1" == "prdsy" ]; then
     user=system
@@ -14,7 +16,9 @@ if [ "$1" == "prdsy" ]; then
     server=themis
     port=1521
     pwd=${SYSTEM_THEMISDEV_PWD}
+    sid=pps1
     dbtype=oracle
+    colour=31
 fi
 if [ "$1" == "devme" ]; then
     user=roetsm
@@ -22,7 +26,9 @@ if [ "$1" == "devme" ]; then
     server=themisdev
     port=1521
     pwd=${ROETSM_THEMIS_PWD}
+    sid=pps1
     dbtype=oracle
+    colour=32
 fi
 if [ "$1" == "devsy" ]; then
     user=system
@@ -30,14 +36,24 @@ if [ "$1" == "devsy" ]; then
     server=themisdev
     port=1521
     pwd=${SYSTEM_THEMIS_PWD}
+    sid=pps1
     dbtype=oci
+    colour=32
 fi
 #usql $dbtype://$user:$pwd@$server:$port/$db
 filename=$(mktemp)
 cat > $filename <<- EOM
-connect $user/"$pwd"@$server
-set sqlprompt "_USER'@'_CONNECT_IDENTIFIER> "
+connect $user/"$pwd"@$server/$sid
+
+-- Use column wrapping to cleanly grab a real ANSI escape byte into a SQL*Plus variable
+column esc_char new_value ESC
+set termout off
+select chr(27) as esc_char from dual;
+set termout on
+
+set sqlprompt "&ESC.[${colour}m _USER'@'_CONNECT_IDENTIFIER> &ESC.[0m"
 EOM
 echo $filename
+cat $filename
 rlwrap sqlplus /nolog @$filename
 rm $filename
