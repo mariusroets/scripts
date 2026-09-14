@@ -7,6 +7,7 @@ alias hg="history | grep"
 alias pg="ps -ef | grep"
 alias s="session"
 alias w="window"
+alias ltr="ls -s=time -r"
 #alias cd="z"
 #alias tmuxs="tmux -S /var/tmux/shared-session"
 function server()
