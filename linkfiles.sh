@@ -11,7 +11,7 @@ copy_dir() {
         timestamp=$(date +%Y%m%d%H%M)
         mv $CONF_DIR/$1 $CONF_DIR/$1.$timestamp
     fi
-    ln -s $1 $CONF_DIR
+    ln -s /home/roetsm/scripts/conf/$1 $CONF_DIR
 }
 
 if confirm_action "Install NeoVim config?"; then
