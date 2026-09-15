@@ -32,7 +32,7 @@ fi
 for f in bin/*; do
 
     if confirm_action "Install $f"; then
-        ln -s bin/$f ~/.local/bin/$f
+        ln -s ~/scripts/$f ~/.local/bin/$(basename $f)
     fi
 done
 
