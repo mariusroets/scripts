@@ -1,0 +1,52 @@
+{
+    "Provider":     { 
+        "prefix": "prov",
+        "body": [
+            "@provider",
+            "def $1(self, param: $2 | None = None,",
+            "\tqry_param: UserQueryParameters | None = None, **kwargs):\n",
+            "\tself.qry = (",
+            "\t\tselect($3)",
+            "\t)",
+            "\t$4\n",
+            "\treturn self.qry"
+        ]
+    },
+    "Updater":     { 
+        "prefix": "upd",
+        "body": [
+            "@updater",
+            "def $1(self, param: $2 | None = None,",
+            "\tqry_param: UserQueryParameters | None = None, **kwargs):\n",
+            "\tparams = self.param",
+            "\tcursor = self.get_cursor()\n",
+            "\tcursor.callproc(",
+            "\t\t'',",
+            "\t\tkeyword_parameters={}",
+            "\t)",
+            "$3"
+        ]
+    },
+    "MethodDescription Provider": {
+        "prefix": "metp",
+        "body": [
+            "'$1': MethodDescription(",
+            "\tmethod='$1',",
+            "\tparameter_class=$2,",
+            "\treturn_class=$3,",
+            "\tprivilege='${4:ADMIN}'",
+            ")"
+        ]
+    },
+    "MethodDescription Updater": {
+        "prefix": "metu",
+        "body": [
+            "'$1': MethodDescription(",
+            "\tmethod='$1',",
+            "\tparameter_class=$2,",
+            "\tprivilege='${3:ADMIN}'",
+            "\tupdater=True",
+            ")"
+        ]
+    }
+}
