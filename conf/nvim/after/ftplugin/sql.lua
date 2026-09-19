@@ -23,7 +23,25 @@ vim.api.nvim_create_user_command("RunSql",
     end,
     {})
 
+vim.api.nvim_create_user_command("RunUSql",
+    function()
+        local x, err = count_panes()
+        if err then
+            return
+        end
+
+        if x == 1 then
+            open_window()
+        end
+        local path = vim.fn.expand("%")
+
+        send("\\i " .. path)
+    end,
+    {})
+
 vim.bo.commentstring = "-- %s"
+vim.keymap.set('n', '<F20>', '<cmd>w<cr><cmd>RunUSql<cr>', { buffer = true })
+vim.keymap.set('i', '<F20>', '<esc><cmd>w<cr><cmd>RunUSql<cr>', { buffer = true })
 vim.keymap.set('n', '<F21>', '<cmd>w<cr><cmd>RunSql<cr>', { buffer = true })
 vim.keymap.set('i', '<F21>', '<esc><cmd>w<cr><cmd>RunSql<cr>', { buffer = true })
 vim.keymap.set('n', '<F10>', '<cmd>set ft=plsql<cr>', { buffer = true })
