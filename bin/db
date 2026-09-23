@@ -5,45 +5,50 @@ if [ "$1" == "prdme" ]; then
     db=pps1
     server=themis
     port=1521
-    pwd=${ROETSM_THEMISDEV_PWD}
+    pwd=${ROETSM_THEMIS_PWD}
     sid=pps1
     dbtype=oracle
     colour=31
+    dev_session=""
 fi
 if [ "$1" == "prdsy" ]; then
     user=system
     db=pps1
     server=themis
     port=1521
-    pwd=${SYSTEM_THEMISDEV_PWD}
+    pwd=${SYSTEM_THEMIS_PWD}
     sid=pps1
-    dbtype=oracle
+    dbtype=oci
     colour=31
+    dev_session=""
 fi
 if [ "$1" == "devme" ]; then
     user=roetsm
     db=pps1
     server=themisdev
     port=1521
-    pwd=${ROETSM_THEMIS_PWD}
+    pwd=${ROETSM_THEMISDEV_PWD}
     sid=pps1
     dbtype=oracle
     colour=32
+    dev_session="alter session set PLSQL_CCFLAGS = 'is_dev_env:true';"
 fi
 if [ "$1" == "devsy" ]; then
     user=system
     db=pps1
     server=themisdev
     port=1521
-    pwd=${SYSTEM_THEMIS_PWD}
+    pwd=${SYSTEM_THEMISDEV_PWD}
     sid=pps1
     dbtype=oci
     colour=32
+    dev_session="alter session set PLSQL_CCFLAGS = 'is_dev_env:true';"
 fi
 #usql $dbtype://$user:$pwd@$server:$port/$db
 filename=$(mktemp)
 cat > $filename <<- EOM
 connect $user/"$pwd"@$server/$sid
+$dev_session
 
 -- Use column wrapping to cleanly grab a real ANSI escape byte into a SQL*Plus variable
 column esc_char new_value ESC
