@@ -1,6 +1,6 @@
 customCommands:
   - key: '<c-p>'
     context: "global"
-    command: 'git push -o ci.skip'
+    command: 'git push -o ci.skip --force-with-lease'
 git:
   autoForwardBranches: none
