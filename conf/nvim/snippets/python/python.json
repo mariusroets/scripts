@@ -22,7 +22,7 @@
             "\tcursor = self.get_cursor()\n",
             "\tcursor.callproc(",
             "\t\t'',",
-            "\t\tkeyword_parameters={}",
+            "\t\tkeyword_parameters={}    # type: ignore[call-arg]",
             "\t)",
             "$3"
         ]
@@ -44,7 +44,7 @@
             "'$1': MethodDescription(",
             "\tmethod='$1',",
             "\tparameter_class=$2,",
-            "\tprivilege='${3:ADMIN}'",
+            "\tprivilege='${3:ADMIN}',",
             "\tupdater=True",
             ")"
         ]
