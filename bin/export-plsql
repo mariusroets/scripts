@@ -4,26 +4,29 @@
 filename=$(mktemp)
 output="$5"
     
-source ~/.db.sh
 if [ "$1" == "prdme" ]; then
-    user=${PRDME[user]}
-    db=${PRDME[db]}
-    pwd=${PRDME[pwd]}
+    user=roetsm
+    db=themis
+    sid=pps1
+    pwd=${ROETSM_THEMIS_PWD}
 fi
 if [ "$1" == "prdsy" ]; then
-    user=${PRDSY[user]}
-    db=${PRDSY[db]}
-    pwd=${PRDSY[pwd]}
+    user=system
+    db=themis
+    sid=pps1
+    pwd=${SYSTEM_THEMIS_PWD}
 fi
 if [ "$1" == "devme" ]; then
-    user=${DEVME[user]}
-    db=${DEVME[db]}
-    pwd=${DEVME[pwd]}
+    user=roetsm
+    db=themisdev
+    sid=pps1
+    pwd=${ROETSM_THEMISDEV_PWD}
 fi
 if [ "$1" == "devsy" ]; then
-    user=${DEVSY[user]}
-    db=${DEVSY[db]}
-    pwd=${DEVSY[pwd]}
+    user=system
+    db=themisdev
+    sid=pps1
+    pwd=${SYSTEM_THEMISDEV_PWD}
 fi
 lower_owner=$(echo "$2" | tr '[:upper:]' '[:lower:]')
 lower_name=$(echo "$3" | tr '[:upper:]' '[:lower:]')
@@ -32,7 +35,7 @@ upper_owner=$(echo "$2" | tr '[:lower:]' '[:upper:]')
 upper_name=$(echo "$3" | tr '[:lower:]' '[:upper:]')
 upper_type=$(echo "$4" | tr '[:lower:]' '[:upper:]')
 cat > $filename <<- EOM
-connect $user/"$pwd"@$db
+connect $user/"$pwd"@$db/$sid
 set heading off
 set trimout on
 set trimspool on
